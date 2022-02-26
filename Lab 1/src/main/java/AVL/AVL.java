@@ -1,20 +1,4 @@
-package com.company;
-
-import lombok.Data;
-
-import java.awt.event.WindowStateListener;
-import java.util.Locale;
-
-@Data
-class Node{
-    private String value;
-    private Node left;
-    private Node right;
-    private int height;
-    Node(String value){
-        this.value=value;
-    }
-}
+package AVL;
 
 public class AVL {
     Node root;
@@ -46,7 +30,7 @@ public class AVL {
     private Node insert(Node node , String value){
         if(node == null)
             return new Node(value);
-        //compare to ch1-ch2
+            //compare to ch1-ch2
         else if(node.getValue().toLowerCase().compareTo(value.toLowerCase())>0){ //new string is lower than current
             node.setLeft(insert(node.getLeft(),value));
         }
@@ -132,11 +116,11 @@ public class AVL {
     }
 
     private void traverseInOrder(Node node) {
-        if (node != null) {
-            traverseInOrder(node.getLeft());
-            System.out.println(node.getValue());
-            traverseInOrder(node.getRight());
-        }
+        if (node == null)
+            return;
+        traverseInOrder(node.getLeft());
+        System.out.println(node.getValue());
+        traverseInOrder(node.getRight());
     }
 
 
