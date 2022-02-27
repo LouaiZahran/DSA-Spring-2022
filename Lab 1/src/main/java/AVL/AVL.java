@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 
 public class AVL implements Tree{
     Node root;
+    int size = 0;
 
     private void calculateNewHeight(Node node){
         if (node == null)
@@ -11,6 +12,10 @@ public class AVL implements Tree{
         int leftHeight = node.hasLeft()? node.getLeft().getHeight():-1;
         int rightHeight = node.hasRight()? node.getRight().getHeight():-1;
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
+    }
+
+    public int getSize(){
+        return this.size;
     }
 
     public Object getMax(){
@@ -62,6 +67,7 @@ public class AVL implements Tree{
 
     private Node insert(Node node, Object obj) throws IllegalArgumentException{
         if(node == null) {
+            this.size++;
             return new Node(obj);
         }
 
@@ -81,8 +87,13 @@ public class AVL implements Tree{
         return rotate(node);
     }
 
+    public void clear(){
+        root = null;
+    }
+
     public void delete(Object obj) throws NoSuchElementException {
         root = delete(root, obj);
+        this.size--;
     }
 
     private Node delete(Node node, Object obj) throws NoSuchElementException{
