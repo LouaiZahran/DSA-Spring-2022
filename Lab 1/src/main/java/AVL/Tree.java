@@ -7,4 +7,6 @@ public interface Tree {
     void insert(Object obj) throws IllegalArgumentException;
     void delete(Object obj) throws NoSuchElementException;
     int getHeight();
+    void traverse();
+    Object getMax();
 }

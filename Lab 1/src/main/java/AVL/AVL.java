@@ -8,8 +8,8 @@ public class AVL implements Tree{
     private void calculateNewHeight(Node node){
         if (node == null)
             return;
-        int leftHeight = node.hasLeft()? node.getLeft().getHeight():0;
-        int rightHeight = node.hasRight()? node.getRight().getHeight():0;
+        int leftHeight = node.hasLeft()? node.getLeft().getHeight():-1;
+        int rightHeight = node.hasRight()? node.getRight().getHeight():-1;
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
     }
 
@@ -34,7 +34,7 @@ public class AVL implements Tree{
     private int getBalanceFactor(Node node){
         if (node == null)
             return 0;
-        return node.getLeft().getHeight() - node.getRight().getHeight();
+        return (node.hasLeft()?node.getLeft().getHeight():-1) - (node.hasRight()?node.getRight().getHeight():-1);
     }
 
     public boolean search(Object obj){
@@ -57,34 +57,35 @@ public class AVL implements Tree{
     }
 
     public void insert(Object obj) throws IllegalArgumentException{
-        insert(root, obj);
+        root = insert(root, obj);
     }
 
-    private void insert(Node node, Object obj) throws IllegalArgumentException{
-        if(node == null)
-            node = new Node(obj);
+    private Node insert(Node node, Object obj) throws IllegalArgumentException{
+        if(node == null) {
+            return new Node(obj);
+        }
 
         String currentValue = (String)node.getValue();
         String insertedValue = (String)obj;
         int comp = currentValue.compareToIgnoreCase(insertedValue);
 
         if(comp > 0){ //new string is lower than current
-            insert(node.getLeft(), obj);
+            node.setLeft(insert(node.getLeft(), obj));
         }else if(comp < 0){
-            insert(node.getRight(), obj);
+            node.setRight(insert(node.getRight(), obj));
         }else{        //duplicated element
             throw new IllegalArgumentException("Duplicated");
         }
 
         calculateNewHeight(node);
-        rotate(node);
+        return rotate(node);
     }
 
     public void delete(Object obj) throws NoSuchElementException {
-        delete(root, obj);
+        root = delete(root, obj);
     }
 
-    private void delete(Node node, Object obj) throws NoSuchElementException{
+    private Node delete(Node node, Object obj) throws NoSuchElementException{
         if(node == null)
             throw new NoSuchElementException("String " + obj +" is not found");
 
@@ -93,43 +94,45 @@ public class AVL implements Tree{
         int comp = currentValue.compareToIgnoreCase(deletedValue);
 
         if(comp > 0){ //deleted string is lower than current
-            delete(node.getLeft(), obj);
+            node.setLeft(delete(node.getLeft(), obj));
         }else if(comp < 0){
-            delete(node.getRight(), obj);
+            node.setRight(delete(node.getRight(), obj));
         }else{//Element found: delete action
               //one or no child
             if(node.getRight() == null)
-                node = node.getLeft();
+                return node.getLeft();
             else if(node.getLeft()==null)
-                node = node.getRight();
+                return node.getRight();
             else{
                 node.setValue(getMax(node.getLeft()));
                 node.setLeft(delete(node.getLeft(),node.getValue()));
             }
-
-            return;
+            calculateNewHeight(node);
+            return rotate(node);
         }
 
         calculateNewHeight(node);
-        rotate(node);
+        return rotate(node);
     }
 
-    private void rotate(Node nodeToRotate){
-        int balanceFactor = getBalanceFactor(nodeToRotate);
-        if (balanceFactor > 1){ //left
+    private Node rotate(Node nodeToRotate){
+        int balanceFactor=getBalanceFactor(nodeToRotate);
+        if (balanceFactor >1) //left
+        {
             if (getBalanceFactor(nodeToRotate.getLeft()) < 0) { //right
                 nodeToRotate.setLeft(rotateLeft(nodeToRotate));
             }
-            rotateRight(nodeToRotate);
-        }else if (balanceFactor < -1){ //right
+            return rotateRight(nodeToRotate);
+        }else if (balanceFactor <-1) //right
+        {
             if (getBalanceFactor(nodeToRotate.getLeft()) > 0) { //left
                 nodeToRotate.setLeft(rotateRight(nodeToRotate));
             }
-            rotateLeft(nodeToRotate);
+            return rotateLeft(nodeToRotate);
         }
+        return nodeToRotate;
     }
-
-    private void rotateLeft(Node node){
+    private Node rotateLeft(Node node){
         Node rightNode = node.getRight();
         Node tempSubTree = rightNode.getLeft();
 
@@ -138,9 +141,11 @@ public class AVL implements Tree{
 
         calculateNewHeight(node);
         calculateNewHeight(rightNode);
-    }
 
-    private void rotateRight(Node node){
+        return rightNode;
+
+    }
+    private Node rotateRight(Node node){
         Node leftNode = node.getLeft();
         Node tempSubTree = leftNode.getRight();
 
@@ -149,6 +154,7 @@ public class AVL implements Tree{
 
         calculateNewHeight(node);
         calculateNewHeight(leftNode);
+        return leftNode;
     }
 
     public void traverse() {
