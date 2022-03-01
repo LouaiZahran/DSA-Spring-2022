@@ -2,6 +2,9 @@ package AVL;
 
 import java.util.NoSuchElementException;
 
+/**
+ * The AVL implementation of the tree interface
+ */
 public class AVL implements Tree{
     Node root;
     int size = 0;
