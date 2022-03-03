@@ -3,7 +3,8 @@ package Trees;
 import java.util.NoSuchElementException;
 
 public abstract class AbstractTree implements Tree{
-    Node root;
+
+    AbstractNode root;
     int size = 0;
 
     @Override
@@ -11,7 +12,7 @@ public abstract class AbstractTree implements Tree{
         return search(root, obj);
     }
 
-    private boolean search(Node node, Object obj){
+    private boolean search(AbstractNode node, Object obj){
         if(node == null)
             return false;
 
@@ -42,7 +43,7 @@ public abstract class AbstractTree implements Tree{
         traverseInOrder(root);
     }
 
-    private void traverseInOrder(Node node) {
+    private void traverseInOrder(AVLNode node) {
         if (node == null)
             return;
         traverseInOrder(node.getLeft());
@@ -60,7 +61,7 @@ public abstract class AbstractTree implements Tree{
             return null;
         return getMax(root);
     }
-    protected Object getMax(Node node){
+    protected Object getMax(AbstractNode node){
         if(!node.hasRight())
             return node.getValue();
         return getMax(node.getRight());

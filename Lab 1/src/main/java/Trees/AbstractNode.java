@@ -3,13 +3,12 @@ package Trees;
 import lombok.Data;
 
 @Data
-class Node{
+public class AbstractNode {
     private Object value;
-    private Node left;
-    private Node right;
-    private int height;
-    Node(Object value){
-        this.value=value;
+    private AbstractNode left;
+    private AbstractNode right;
+    AbstractNode(Object value){
+        this.value=value;;
     }
 
     public boolean hasLeft(){

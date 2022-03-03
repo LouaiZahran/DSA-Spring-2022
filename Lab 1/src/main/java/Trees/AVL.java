@@ -4,16 +4,16 @@ import java.util.NoSuchElementException;
 
 public class AVL extends AbstractTree{
 
-    private void calculateNewHeight(Node node){
+    private void calculateNewHeight(AbstractNode node){
         if (node == null)
             return;
-        int leftHeight = node.hasLeft()? node.getLeft().getHeight():-1;
+        int leftHeight = node.hasLeft()?  node.getLeft().getHeight():-1;
         int rightHeight = node.hasRight()? node.getRight().getHeight():-1;
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
     }
 
 
-    private int getBalanceFactor(Node node){
+    private int getBalanceFactor(AbstractNode node){
         if (node == null)
             return 0;
         return (node.hasLeft()?node.getLeft().getHeight():-1) - (node.hasRight()?node.getRight().getHeight():-1);
@@ -24,10 +24,10 @@ public class AVL extends AbstractTree{
         root = insert(root, obj);
     }
 
-    private Node insert(Node node, Object obj) throws IllegalArgumentException{
+    private AVLNode insert(AbstractNode node, Object obj) throws IllegalArgumentException{
         if(node == null) {
             this.size++;
-            return new Node(obj);
+            return new AVLNode(obj);
         }
 
         String currentValue = (String)node.getValue();
@@ -52,7 +52,7 @@ public class AVL extends AbstractTree{
         this.size--;
     }
 
-    private Node delete(Node node, Object obj) throws NoSuchElementException{
+    private AVLNode delete(AVLNode node, Object obj) throws NoSuchElementException{
         if(node == null)
             throw new NoSuchElementException("String " + obj +" is not found");
 
@@ -82,7 +82,7 @@ public class AVL extends AbstractTree{
         return rotate(node);
     }
 
-    private Node rotate(Node nodeToRotate){
+    private AVLNode rotate(AbstractNode nodeToRotate){
         int balanceFactor=getBalanceFactor(nodeToRotate);
         if (balanceFactor >1) //left
         {
@@ -97,11 +97,11 @@ public class AVL extends AbstractTree{
             }
             return rotateLeft(nodeToRotate);
         }
-        return nodeToRotate;
+        return (AVLNode) nodeToRotate;
     }
-    private Node rotateLeft(Node node){
-        Node rightNode = node.getRight();
-        Node tempSubTree = rightNode.getLeft();
+    private AVLNode rotateLeft(AbstractNode node){
+        AVLNode rightNode = (AVLNode) node.getRight();
+        AVLNode tempSubTree = (AVLNode) rightNode.getLeft();
 
         rightNode.setLeft(node);
         node.setRight(tempSubTree);
@@ -112,9 +112,9 @@ public class AVL extends AbstractTree{
         return rightNode;
 
     }
-    private Node rotateRight(Node node){
-        Node leftNode = node.getLeft();
-        Node tempSubTree = leftNode.getRight();
+    private AVLNode rotateRight(AbstractNode node){
+        AVLNode leftNode = (AVLNode) node.getLeft();
+        AVLNode tempSubTree = (AVLNode) leftNode.getRight();
 
         leftNode.setRight(node);
         node.setLeft(tempSubTree);
