@@ -43,7 +43,7 @@ public abstract class AbstractTree implements Tree{
         traverseInOrder(root);
     }
 
-    private void traverseInOrder(AVLNode node) {
+    private void traverseInOrder(AbstractNode node) {
         if (node == null)
             return;
         traverseInOrder(node.getLeft());
@@ -61,17 +61,11 @@ public abstract class AbstractTree implements Tree{
             return null;
         return getMax(root);
     }
+
     protected Object getMax(AbstractNode node){
         if(!node.hasRight())
             return node.getValue();
         return getMax(node.getRight());
-    }
-
-    @Override
-    public int getHeight() {
-        if (root == null)
-            return 0;
-        return root.getHeight();
     }
 
 }

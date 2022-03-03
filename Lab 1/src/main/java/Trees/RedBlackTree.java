@@ -11,9 +11,15 @@ public class RedBlackTree extends AbstractTree {
 
     RedBlackNode root;
 
+    @Override
+    public int getHeight() {
+        //TODO: Implement this method
+        return 0;
+    }
+
     public void insert(Object obj) throws IllegalArgumentException{
-        AbstractNode node=new RedBlackNode(obj);
-        root = insert(root, node);
+        AbstractNode node = new RedBlackNode(obj);
+        root = (RedBlackNode) insert(root, node);
     }
 
     private AbstractNode insert(AbstractNode node,AbstractNode newNode) throws IllegalArgumentException{
@@ -33,11 +39,14 @@ public class RedBlackTree extends AbstractTree {
         }else{        //duplicated element
             throw new IllegalArgumentException("Duplicated");
         }
+
+        //TODO: Fix return value
+        return null;
     }
 
 
     public void delete(Object obj) throws NoSuchElementException {
-        root = delete(root, obj);
+        root = (RedBlackNode) delete(root, obj);
         this.size--;
     }
 
@@ -66,6 +75,8 @@ public class RedBlackTree extends AbstractTree {
 
         }
 
+        //TODO: fix return value
+        return null;
     }
 
 }
