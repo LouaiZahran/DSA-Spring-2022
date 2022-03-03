@@ -3,7 +3,7 @@ package Trees;
 import lombok.Data;
 
 @Data
-class Node{
+public abstract class AbstractNode {
     private Object value;
     private Node left;
     private Node right;

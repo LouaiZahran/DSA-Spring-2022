@@ -4,11 +4,20 @@ import java.util.NoSuchElementException;
 
 public class AVL extends AbstractTree{
 
-    private void calculateNewHeight(Node node){
+    AVLNode root;
+
+    //TODO: implement this method
+    public int getHeight(){
+        return 0;
+    }
+
+    private void calculateNewHeight(AVLNode node){
         if (node == null)
             return;
-        int leftHeight = node.hasLeft()? node.getLeft().getHeight():-1;
-        int rightHeight = node.hasRight()? node.getRight().getHeight():-1;
+        AVLNode left = (AVLNode) node.getLeft();
+        AVLNode right = (AVLNode) node.getRight();
+        int leftHeight = node.hasLeft()?  left.getHeight():-1;
+        int rightHeight = node.hasRight()? right.getHeight():-1;
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
     }
 
@@ -16,7 +25,7 @@ public class AVL extends AbstractTree{
     private int getBalanceFactor(Node node){
         if (node == null)
             return 0;
-        return (node.hasLeft()?node.getLeft().getHeight():-1) - (node.hasRight()?node.getRight().getHeight():-1);
+        return (node.hasLeft()?((AVLNode)(node.getLeft())).getHeight():-1) - (node.hasRight()?((AVLNode)(node.getRight())).getHeight():-1);
     }
 
 
@@ -42,7 +51,7 @@ public class AVL extends AbstractTree{
             throw new IllegalArgumentException("Duplicated");
         }
 
-        calculateNewHeight(node);
+        calculateNewHeight((AVLNode) node);
         return rotate(node);
     }
 
@@ -61,18 +70,18 @@ public class AVL extends AbstractTree{
         int comp = currentValue.compareToIgnoreCase(deletedValue);
 
         if(comp > 0){ //deleted string is lower than current
-            node.setLeft(delete(node.getLeft(), obj));
+            node.setLeft(delete((AVLNode) node.getLeft(), obj));
         }else if(comp < 0){
-            node.setRight(delete(node.getRight(), obj));
+            node.setRight(delete((AVLNode) node.getRight(), obj));
         }else{//Element found: delete action
               //one or no child
             if(node.getRight() == null)
-                return node.getLeft();
+                return (AVLNode) node.getLeft();
             else if(node.getLeft()==null)
-                return node.getRight();
+                return (AVLNode) node.getRight();
             else{
                 node.setValue(getMax(node.getLeft()));
-                node.setLeft(delete(node.getLeft(),node.getValue()));
+                node.setLeft(delete((AVLNode) node.getLeft(),node.getValue()));
             }
             calculateNewHeight(node);
             return rotate(node);
@@ -106,7 +115,7 @@ public class AVL extends AbstractTree{
         rightNode.setLeft(node);
         node.setRight(tempSubTree);
 
-        calculateNewHeight(node);
+        calculateNewHeight((AVLNode) node);
         calculateNewHeight(rightNode);
 
         return rightNode;
@@ -119,7 +128,7 @@ public class AVL extends AbstractTree{
         leftNode.setRight(node);
         node.setLeft(tempSubTree);
 
-        calculateNewHeight(node);
+        calculateNewHeight((AVLNode) node);
         calculateNewHeight(leftNode);
         return leftNode;
     }
