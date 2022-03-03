@@ -2,12 +2,7 @@ package Trees;
 
 import java.util.NoSuchElementException;
 
-public class AVL extends AbstractTree{
-
-    //TODO: implement this method
-    public int getHeight(){
-        return 0;
-    }
+public class AVL<T> extends AbstractTree<T>{
 
     private void calculateNewHeight(AVLNode node){
         if (node == null)
@@ -20,18 +15,18 @@ public class AVL extends AbstractTree{
     }
 
 
-    private int getBalanceFactor(AbstractNode node){
+    private int getBalanceFactor(AbstractNode<T> node){
         if (node == null)
             return 0;
         return (node.hasLeft()?((AVLNode)(node.getLeft())).getHeight():-1) - (node.hasRight()?((AVLNode)(node.getRight())).getHeight():-1);
     }
 
 
-    public void insert(Object obj) throws IllegalArgumentException{
+    public void insert(T obj) throws IllegalArgumentException{
         root = insert(root, obj);
     }
 
-    private AVLNode insert(AbstractNode node, Object obj) throws IllegalArgumentException{
+    private AVLNode insert(AbstractNode<T> node, T obj) throws IllegalArgumentException{
         if(node == null) {
             this.size++;
             return new AVLNode(obj);
@@ -54,12 +49,12 @@ public class AVL extends AbstractTree{
     }
 
 
-    public void delete(Object obj) throws NoSuchElementException {
+    public void delete(T obj) throws NoSuchElementException {
         root = delete((AVLNode)root, obj);
         this.size--;
     }
 
-    private AVLNode delete(AVLNode node, Object obj) throws NoSuchElementException{
+    private AVLNode delete(AVLNode node, T obj) throws NoSuchElementException{
         if(node == null)
             throw new NoSuchElementException("String " + obj +" is not found");
 
@@ -79,7 +74,7 @@ public class AVL extends AbstractTree{
                 return (AVLNode) node.getRight();
             else{
                 node.setValue(getMax(node.getLeft()));
-                node.setLeft(delete((AVLNode) node.getLeft(),node.getValue()));
+                node.setLeft(delete((AVLNode) node.getLeft(),(T) node.getValue()));
             }
             calculateNewHeight(node);
             return rotate(node);

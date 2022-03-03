@@ -10,13 +10,18 @@ import static java.awt.Color.RED;
 import static java.awt.Color.BLACK;
 
 @Setter @Getter
-public class RedBlackNode extends AbstractNode{
+public class RedBlackNode<T> extends AbstractNode<T>{
 
     private Color color= RED;
-    RedBlackNode(Object value) {
+    private RedBlackNode parentNode;
+    RedBlackNode(T value) {
         super(value);
     }
-    public void flipColor() {
+
+    public void convertColor() {
         setColor(color == RED ? BLACK : RED);
+    }
+    public boolean isLeft(){
+        return this==parentNode.getLeft();
     }
 }
