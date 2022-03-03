@@ -9,8 +9,6 @@ import static java.awt.Color.BLACK;
 
 public class RedBlackTree extends AbstractTree {
 
-    RedBlackNode root;
-
     @Override
     public int getHeight() {
         //TODO: Implement this method
@@ -19,7 +17,7 @@ public class RedBlackTree extends AbstractTree {
 
     public void insert(Object obj) throws IllegalArgumentException{
         AbstractNode node = new RedBlackNode(obj);
-        root = (RedBlackNode) insert(root, node);
+        root = insert(root, node);
     }
 
     private AbstractNode insert(AbstractNode node,AbstractNode newNode) throws IllegalArgumentException{
@@ -46,7 +44,7 @@ public class RedBlackTree extends AbstractTree {
 
 
     public void delete(Object obj) throws NoSuchElementException {
-        root = (RedBlackNode) delete(root, obj);
+        root = delete(root, obj);
         this.size--;
     }
 

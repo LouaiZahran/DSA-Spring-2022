@@ -8,7 +8,7 @@ public abstract class AbstractNode {
     private AbstractNode left;
     private AbstractNode right;
     AbstractNode(Object value){
-        this.value=value;;
+        this.value=value;
     }
 
     public boolean hasLeft(){
