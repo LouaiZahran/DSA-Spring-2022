@@ -4,8 +4,6 @@ import java.util.NoSuchElementException;
 
 public class AVL extends AbstractTree{
 
-    AVLNode root;
-
     //TODO: implement this method
     public int getHeight(){
         return 0;
@@ -57,7 +55,7 @@ public class AVL extends AbstractTree{
 
 
     public void delete(Object obj) throws NoSuchElementException {
-        root = delete(root, obj);
+        root = delete((AVLNode)root, obj);
         this.size--;
     }
 
