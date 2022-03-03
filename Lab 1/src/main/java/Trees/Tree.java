@@ -38,6 +38,12 @@ public interface Tree {
     void traverse();
 
     /**
+     * Returns the maximum height of any path in the tree
+     * @return the height of the tree
+     */
+    int getHeight();
+
+    /**
      * Returns the number of nodes in the tree
      * @return the size of the tree
      */

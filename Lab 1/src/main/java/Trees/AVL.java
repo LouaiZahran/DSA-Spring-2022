@@ -4,6 +4,11 @@ import java.util.NoSuchElementException;
 
 public class AVL extends AbstractTree{
 
+    //TODO: implement this method
+    public int getHeight(){
+        return 0;
+    }
+
     private void calculateNewHeight(AVLNode node){
         if (node == null)
             return;
