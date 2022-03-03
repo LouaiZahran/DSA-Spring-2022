@@ -1,4 +1,4 @@
-package AVL;
+package Trees;
 
 import lombok.Data;
 

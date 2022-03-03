@@ -1,10 +1,8 @@
-package AVL;
+package Trees;
 
 import java.util.NoSuchElementException;
 
-public class AVL implements Tree{
-    Node root;
-    int size = 0;
+public class AVL extends AbstractTree{
 
     private void calculateNewHeight(Node node){
         if (node == null)
@@ -14,27 +12,6 @@ public class AVL implements Tree{
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
     }
 
-    public int getSize(){
-        return this.size;
-    }
-
-    public Object getMax(){
-        if(root == null)
-            return null;
-        return getMax(root);
-    }
-
-    private Object getMax(Node node){
-        if(!node.hasRight())
-            return node.getValue();
-        return getMax(node.getRight());
-    }
-
-    public int getHeight() {
-        if (root == null)
-            return 0;
-        return root.getHeight();
-    }
 
     private int getBalanceFactor(Node node){
         if (node == null)
@@ -42,24 +19,6 @@ public class AVL implements Tree{
         return (node.hasLeft()?node.getLeft().getHeight():-1) - (node.hasRight()?node.getRight().getHeight():-1);
     }
 
-    public boolean search(Object obj){
-        return search(root, obj);
-    }
-
-    private boolean search(Node node, Object obj){
-        if(node == null)
-            return false;
-
-        String currentValue = (String)node.getValue();
-        String insertedValue = (String)obj;
-        int comp = currentValue.compareToIgnoreCase(insertedValue);
-        if(comp == 0)
-            return true;
-        else if(comp > 0)
-            return search(node.getLeft(), obj);
-        else
-            return search(node.getRight(), obj);
-    }
 
     public void insert(Object obj) throws IllegalArgumentException{
         root = insert(root, obj);
@@ -87,9 +46,6 @@ public class AVL implements Tree{
         return rotate(node);
     }
 
-    public void clear(){
-        root = null;
-    }
 
     public void delete(Object obj) throws NoSuchElementException {
         root = delete(root, obj);
@@ -168,15 +124,4 @@ public class AVL implements Tree{
         return leftNode;
     }
 
-    public void traverse() {
-        traverseInOrder(root);
-    }
-
-    private void traverseInOrder(Node node) {
-        if (node == null)
-            return;
-        traverseInOrder(node.getLeft());
-        System.out.println(node.getValue());
-        traverseInOrder(node.getRight());
-    }
 }

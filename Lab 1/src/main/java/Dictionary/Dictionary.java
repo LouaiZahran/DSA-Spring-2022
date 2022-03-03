@@ -1,6 +1,6 @@
 package Dictionary;
 
-import AVL.*;
+import Trees.*;
 import IO.FileReader;
 
 import java.io.FileNotFoundException;
