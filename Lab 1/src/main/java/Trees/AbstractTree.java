@@ -2,22 +2,22 @@ package Trees;
 
 import java.util.NoSuchElementException;
 
-public abstract class AbstractTree implements Tree{
+public abstract class AbstractTree<T> implements Tree<T>{
 
-    AbstractNode root;
+    AbstractNode<T> root;
     int size = 0;
 
     @Override
-    public boolean search(Object obj){
+    public boolean search(T obj){
         return search(root, obj);
     }
 
-    private boolean search(AbstractNode node, Object obj){
+    private boolean search(AbstractNode node, T obj){
         if(node == null)
             return false;
 
-        String currentValue = (String)node.getValue();
-        String insertedValue = (String)obj;
+        String currentValue = String.valueOf(node.getValue());
+        String insertedValue = String.valueOf(obj);
         int comp = currentValue.compareToIgnoreCase(insertedValue);
         if(comp == 0)
             return true;
@@ -28,10 +28,10 @@ public abstract class AbstractTree implements Tree{
     }
 
     @Override
-    public abstract void insert(Object obj) throws IllegalArgumentException;
+    public abstract void insert(T obj) throws IllegalArgumentException;
 
     @Override
-    public abstract void delete(Object obj) throws NoSuchElementException;
+    public abstract void delete(T obj) throws NoSuchElementException;
 
     @Override
     public void clear(){
@@ -56,16 +56,38 @@ public abstract class AbstractTree implements Tree{
 
 
     @Override
-    public Object getMax(){
+    public T getMax(){
         if(root == null)
             return null;
         return getMax(root);
     }
 
-    protected Object getMax(AbstractNode node){
+    protected T getMax(AbstractNode<T> node){
         if(!node.hasRight())
             return node.getValue();
         return getMax(node.getRight());
+    }
+    @Override
+    public T getMin(){
+        if(root == null)
+            return null;
+        return getMin(root);
+    }
+
+    protected T getMin(AbstractNode<T> node){
+        if(!node.hasLeft())
+            return node.getValue();
+        return getMin(node.getLeft());
+    }
+
+    @Override
+    public AbstractNode<T> getRoot(){
+        return root;
+    }
+
+    @Override
+    public boolean isEmpty(){
+        return root == null;
     }
 
 }

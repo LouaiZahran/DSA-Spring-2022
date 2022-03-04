@@ -3,11 +3,11 @@ package Trees;
 import lombok.Data;
 
 @Data
-public abstract class AbstractNode {
-    private Object value;
-    private AbstractNode left;
-    private AbstractNode right;
-    AbstractNode(Object value){
+public abstract class AbstractNode<T> {
+    private T value;
+    private AbstractNode<T> left;
+    private AbstractNode<T> right;
+    AbstractNode(T value){
         this.value=value;
     }
 

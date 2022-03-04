@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-class AVLNode extends AbstractNode{
+class AVLNode<T> extends AbstractNode<T>{
 
     private int height;
-    AVLNode(Object value){
+    AVLNode(T value){
         super(value);
     }
 

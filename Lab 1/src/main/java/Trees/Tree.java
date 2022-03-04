@@ -48,4 +48,23 @@ public interface Tree<T> {
      * @return the value of the maximum key in the tree
      */
     T getMax();
+
+    /**
+     * Traverses the tree and returns the minimum value it holds
+     * @return the value of the minimum key in the tree
+     */
+    T getMin();
+
+    /**
+     * Returns the root of the tree
+     * @return root of the tree
+     */
+    AbstractNode<T> getRoot();
+    /**
+     * Check if the tree is empty or not
+     * @return a boolean value that is true if the tree empty
+     */
+    boolean isEmpty();
+
+
 }

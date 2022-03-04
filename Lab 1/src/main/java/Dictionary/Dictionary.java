@@ -9,8 +9,8 @@ import java.util.ArrayList;
 /**
  * The class implementing the functionality of a dictionary
  */
-public class Dictionary {
-    Tree tree = new AVL();
+public class Dictionary<T> {
+    Tree<T> tree = new AVL<>();
 
     /**
      * Clears the dictionary and insert all the words inserted in the specified file
@@ -19,15 +19,15 @@ public class Dictionary {
      */
     public void load(String fileName) throws FileNotFoundException {
         tree.clear();
-        insert(FileReader.loadFile(fileName));
+        insert((ArrayList<T>) FileReader.loadFile(fileName));
     }
 
     /**
      * Adds a list of words one by one
      * @param list the words to be inserted
      */
-    private void insert(ArrayList<Object> list){
-        for(Object obj: list)
+    private void insert(ArrayList<T> list){
+        for(T obj: list)
             insert(obj);
     }
 
@@ -36,7 +36,7 @@ public class Dictionary {
      * @param obj the word to be added
      * @throws IllegalArgumentException if the word is already in the dictionary
      */
-    public void insert(Object obj) throws IllegalArgumentException{
+    public void insert(T obj) throws IllegalArgumentException{
         tree.insert(obj);
     }
 
@@ -45,9 +45,9 @@ public class Dictionary {
      * @param list the words to be searched for
      * @return a list indicating whether each element was found or not
      */
-    public ArrayList<Boolean> lookup(ArrayList<Object> list){
+    public ArrayList<Boolean> lookup(ArrayList<T> list){
         ArrayList<Boolean> ret = new ArrayList<>();
-        for(Object obj: list)
+        for(T obj: list)
             ret.add(lookup(obj));
         return ret;
     }
@@ -57,7 +57,7 @@ public class Dictionary {
      * @param obj the word to be searched for
      * @return whether the word was found or not
      */
-    public boolean lookup(Object obj){
+    public boolean lookup(T obj){
         return tree.search(obj);
     }
 
@@ -66,9 +66,9 @@ public class Dictionary {
      * @param list the words to be removed
      * @return a list indicating whether each element was successfully removed or not
      */
-    public ArrayList<Boolean> delete(ArrayList<Object> list){
+    public ArrayList<Boolean> delete(ArrayList<T> list){
         ArrayList<Boolean> ret = new ArrayList<>();
-        for(Object obj: list)
+        for(T obj: list)
             ret.add(delete(obj));
         return ret;
     }
@@ -78,7 +78,7 @@ public class Dictionary {
      * @param obj the word to be removed
      * @return whether the word was removed successfully or not
      */
-    public boolean delete(Object obj){
+    public boolean delete(T obj){
         try{
             tree.delete(obj);
         }catch(Exception e){

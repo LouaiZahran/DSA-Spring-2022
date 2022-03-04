@@ -32,8 +32,8 @@ public class AVL<T> extends AbstractTree<T>{
             return new AVLNode(obj);
         }
 
-        String currentValue = (String)node.getValue();
-        String insertedValue = (String)obj;
+        String currentValue = String.valueOf(node.getValue());
+        String insertedValue = String.valueOf(obj);
         int comp = currentValue.compareToIgnoreCase(insertedValue);
 
         if(comp > 0){ //new string is lower than current
@@ -58,8 +58,8 @@ public class AVL<T> extends AbstractTree<T>{
         if(node == null)
             throw new NoSuchElementException("String " + obj +" is not found");
 
-        String currentValue = (String)node.getValue();
-        String deletedValue = (String)obj;
+        String currentValue = String.valueOf(node.getValue());
+        String deletedValue = String.valueOf(obj);
         int comp = currentValue.compareToIgnoreCase(deletedValue);
 
         if(comp > 0){ //deleted string is lower than current
