@@ -14,11 +14,12 @@ public class AVL<T> extends AbstractTree<T>{
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
     }
 
+    private int height(AbstractNode<T> node){
+        return node!= null? ((AVLNode)node).getHeight():0;
+    }
 
     private int getBalanceFactor(AbstractNode<T> node){
-        if (node == null)
-            return 0;
-        return (node.hasLeft()?((AVLNode)(node.getLeft())).getHeight():-1) - (node.hasRight()?((AVLNode)(node.getRight())).getHeight():-1);
+        return node!=null? height(node.getLeft())-height(node.getRight()):0;
     }
 
 
@@ -89,13 +90,13 @@ public class AVL<T> extends AbstractTree<T>{
         if (balanceFactor >1) //left
         {
             if (getBalanceFactor(nodeToRotate.getLeft()) < 0) { //right
-                nodeToRotate.setLeft(rotateLeft(nodeToRotate));
+                nodeToRotate.setLeft(rotateLeft(nodeToRotate.getLeft()));
             }
             return rotateRight(nodeToRotate);
         }else if (balanceFactor <-1) //right
         {
-            if (getBalanceFactor(nodeToRotate.getLeft()) > 0) { //left
-                nodeToRotate.setLeft(rotateRight(nodeToRotate));
+            if (getBalanceFactor(nodeToRotate.getRight()) > 0) { //left
+                nodeToRotate.setRight(rotateRight(nodeToRotate.getRight()));
             }
             return rotateLeft(nodeToRotate);
         }
