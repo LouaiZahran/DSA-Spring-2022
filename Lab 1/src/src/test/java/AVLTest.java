@@ -44,12 +44,14 @@ class AVLTest {
 
     private boolean checkOrderingOfTree(AbstractNode<Integer> current) {
         if(current.getLeft() != null) {
-            if(current.getLeft().getValue().compareTo(current.getValue()) > 0)
+            int compLeft=String.valueOf(current.getLeft().getValue()).compareTo((String.valueOf(current.getValue())));
+            if(compLeft > 0)
                 return false;
             else
                 return checkOrderingOfTree(current.getLeft());
         } else  if(current.getRight() != null) {
-            if(current.getRight().getValue().compareTo(current.getValue()) < 0)
+            int compRight=String.valueOf(current.getRight().getValue()).compareTo((String.valueOf(current.getValue())));
+            if(compRight < 0)
                 return false;
             else
                 return checkOrderingOfTree(current.getRight());
@@ -62,14 +64,12 @@ class AVLTest {
     @Test
     @Ignore("Should be fixed")
     public void test() {
-        assertTrue(tree.isEmpty());
-
         insert(16,24,36,19,44,28,61,74,83,64,52,65,86,93,88);
         assertTrue(tree.getMin() == 16);
         assertTrue(tree.getMax() == 93);
 
-        assertTrue(checkBalanceOfTree(tree.getRoot()));
         assertTrue(checkOrderingOfTree(tree.getRoot()));
+        assertTrue(checkBalanceOfTree(tree.getRoot()));
 
         tree.delete(88);
         assertTrue(checkBalanceOfTree(tree.getRoot()));
