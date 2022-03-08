@@ -65,7 +65,6 @@ class AVLTest {
     @Ignore("Should be fixed")
     public void test() {
         assertTrue(tree.isEmpty());
-
         insert(16,24,36,19,44,28,61,74,83,64,52,65,86,93,88);
         assertTrue(tree.getMin() == 16);
         assertTrue(tree.getMax() == 93);
