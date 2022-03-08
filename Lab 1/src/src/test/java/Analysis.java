@@ -32,7 +32,7 @@ public class Analysis {
                 startTime=System.nanoTime();
                 tree.insert(str);
                 endTime=System.nanoTime()-startTime;
-                timeAvg=(timeAvg+endTime)/2;
+                timeAvg= j==0? endTime : (timeAvg+endTime)/2;
             }
             insertionAvgTime.add(timeAvg);
             timeAvg=0;
@@ -42,7 +42,7 @@ public class Analysis {
                 startTime=System.nanoTime();
                 tree.delete(deletedString);
                 endTime=System.nanoTime()-startTime;
-                timeAvg=(timeAvg+endTime)/2;
+                timeAvg= j==0? endTime : (timeAvg+endTime)/2;
             }
             deletionAvgTime.add(timeAvg);
             timeAvg=0;
