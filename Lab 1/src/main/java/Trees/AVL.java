@@ -14,15 +14,11 @@ public class AVL<T> extends AbstractTree<T>{
         node.setHeight(1 + Math.max(leftHeight, rightHeight));
     }
 
-    private int height(AbstractNode<T> node){
-        return node!= null? ((AVLNode)node).getHeight():0;
+    private int getBalanceFactor(AbstractNode<T> node) {
+        if (node == null)
+            return 0;
+        return (node.hasLeft() ? ((AVLNode) (node.getLeft())).getHeight() : -1) - (node.hasRight() ? ((AVLNode) (node.getRight())).getHeight() : -1);
     }
-
-    private int getBalanceFactor(AbstractNode<T> node){
-        return node!=null? height(node.getLeft())-height(node.getRight()):0;
-    }
-
-
     public void insert(T obj) throws IllegalArgumentException{
         root = insert(root, obj);
     }
