@@ -89,13 +89,13 @@ public class AVL<T> extends AbstractTree<T>{
         if (balanceFactor >1) //left
         {
             if (getBalanceFactor(nodeToRotate.getLeft()) < 0) { //right
-                nodeToRotate.setLeft(rotateLeft(nodeToRotate));
+                nodeToRotate.setLeft(rotateLeft(nodeToRotate.getLeft()));
             }
             return rotateRight(nodeToRotate);
         }else if (balanceFactor <-1) //right
         {
-            if (getBalanceFactor(nodeToRotate.getLeft()) > 0) { //left
-                nodeToRotate.setLeft(rotateRight(nodeToRotate));
+            if (getBalanceFactor(nodeToRotate.getRight()) > 0) { //left
+                nodeToRotate.setRight(rotateRight(nodeToRotate.getRight()));
             }
             return rotateLeft(nodeToRotate);
         }

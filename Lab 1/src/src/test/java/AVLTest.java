@@ -44,12 +44,14 @@ class AVLTest {
 
     private boolean checkOrderingOfTree(AbstractNode<Integer> current) {
         if(current.getLeft() != null) {
-            if(current.getLeft().getValue().compareTo(current.getValue()) > 0)
+            int compLeft=String.valueOf(current.getLeft().getValue()).compareTo(String.valueOf(current.getValue()));
+            if(compLeft > 0)
                 return false;
             else
                 return checkOrderingOfTree(current.getLeft());
         } else  if(current.getRight() != null) {
-            if(current.getRight().getValue().compareTo(current.getValue()) < 0)
+            int compRight=String.valueOf(current.getRight().getValue()).compareTo(String.valueOf(current.getValue()));
+            if(compRight< 0)
                 return false;
             else
                 return checkOrderingOfTree(current.getRight());
