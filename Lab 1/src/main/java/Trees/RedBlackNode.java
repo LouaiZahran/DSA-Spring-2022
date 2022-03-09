@@ -22,6 +22,8 @@ public class RedBlackNode<T> extends AbstractNode<T>{
         setColor(color == RED ? BLACK : RED);
     }
     public boolean isLeft(){
+        if(parentNode == null)
+            return false;
         return this==parentNode.getLeft();
     }
 }

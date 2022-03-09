@@ -21,10 +21,11 @@ public class Analysis {
         long startTime=0;
         long endTime=0;
         Tree<String> tree = new AVL<String>();
-        ArrayList<Long> insertionAvgTime=new ArrayList<>();
-        ArrayList<Long> deletionAvgTime=new ArrayList<>();
+        ArrayList<Double> insertionAvgTime=new ArrayList<>();
+        ArrayList<Double> deletionAvgTime=new ArrayList<>();
         ArrayList<String> arrayToDelete=new ArrayList<>();
-        long timeAvg=0;
+        double timeAvg=0;
+        double sum=0;
         for(int i=1;i<=1000000;i*=10){
             for (int j=0;j<i;j++){
                 String str=getString(40);
@@ -32,20 +33,20 @@ public class Analysis {
                 startTime=System.nanoTime();
                 tree.insert(str);
                 endTime=System.nanoTime()-startTime;
-                timeAvg= j==0? endTime : (timeAvg+endTime)/2;
+                sum+=(double) endTime;
             }
-            insertionAvgTime.add(timeAvg);
-            timeAvg=0;
+            insertionAvgTime.add(sum/i);
+            sum=0;
             for (int j=0;j<i;j++){
                 int index=(int) (Math.random()*arrayToDelete.size())-1;
                 String deletedString= arrayToDelete.remove(index==-1?0:index);
                 startTime=System.nanoTime();
                 tree.delete(deletedString);
                 endTime=System.nanoTime()-startTime;
-                timeAvg= j==0? endTime : (timeAvg+endTime)/2;
+                sum+=(double) endTime;
             }
-            deletionAvgTime.add(timeAvg);
-            timeAvg=0;
+            deletionAvgTime.add(sum/i);
+            sum=0;
         }
         System.out.println("Insertion Avg Time");
         for(int i=0 , n = 1 ;i<insertionAvgTime.size() && n<=1000000;i++ ,n*=10){

@@ -24,8 +24,8 @@ public class RedBlackTree<T> extends AbstractTree<T> {
             return newNode;
         }
 
-        String currentValue = (String)node.getValue();
-        String insertedValue = (String)newNode.getValue();
+        String currentValue = String.valueOf(node.getValue());
+        String insertedValue = String.valueOf(newNode.getValue());
         int comp = currentValue.compareToIgnoreCase(insertedValue);
 
         if(comp > 0){ //new string is lower than current
@@ -77,7 +77,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     private void fixTree(RedBlackNode node){
         RedBlackNode parent = node.getParentNode();
         if( node!=root && parent.getColor() == RED){
-            RedBlackNode grandParent =node.getParentNode().getParentNode();
+            RedBlackNode grandParent =parent.getParentNode();
             RedBlackNode uncle = parent.isLeft()? (RedBlackNode)grandParent.getRight() : (RedBlackNode)grandParent.getLeft();
             if(uncle != null && uncle.getColor() == RED){
                 recolor(parent,uncle,grandParent);
@@ -121,8 +121,8 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         rightNode.setLeft(node);
         node.setRight(tempNode);
 
-        if(node.getRight()!=null){
-            ((RedBlackNode) node.getRight()).setParentNode(node);
+        if(tempNode!=null){
+            tempNode.setParentNode(node);
         }
         rightNode.setParentNode(node.getParentNode());
         updateChildrenOfParentNode(node,rightNode);
@@ -138,13 +138,13 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     }
     private void rotateRight(RedBlackNode node){
         RedBlackNode leftNode =(RedBlackNode) node.getLeft();
-        RedBlackNode tempNode = (RedBlackNode) leftNode.getLeft();
+        RedBlackNode tempNode = (RedBlackNode) leftNode.getRight();
 
         leftNode.setRight(node);
         node.setLeft(tempNode);
 
-        if(node.getLeft()!=null){
-            ((RedBlackNode) node.getLeft()).setParentNode(node);
+        if(tempNode!=null){
+            tempNode.setParentNode(node);
         }
         leftNode.setParentNode(node.getParentNode());
         updateChildrenOfParentNode(node,leftNode);
