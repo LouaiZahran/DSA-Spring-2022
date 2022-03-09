@@ -15,7 +15,8 @@ public class RedBlackTest {
     @Test
     @Ignore("Should be fixed")
     public void test() {
-        int[] n={4,14,10,2,5,3,8,19,7,20,12,1,9,15,13,11,18,6,16,17};
+        int[] n={1,3,2,4};
         createArray(n);
+
     }
 }

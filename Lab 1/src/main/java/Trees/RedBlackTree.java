@@ -76,7 +76,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     }
     private void fixTree(RedBlackNode node){
         RedBlackNode parent = node.getParentNode();
-        if( node!=root && parent.getColor() == RED){
+        if( parent!=root && parent!=null && parent.getColor() == RED){
             RedBlackNode grandParent =parent.getParentNode();
             RedBlackNode uncle = parent.isLeft()? (RedBlackNode)grandParent.getRight() : (RedBlackNode)grandParent.getLeft();
             if(uncle != null && uncle.getColor() == RED){
@@ -99,18 +99,24 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     private void fixLeft(RedBlackNode node,RedBlackNode parent,RedBlackNode grandParent){
         if(!node.isLeft()){//change left right to left left
             rotateLeft(parent);
+            grandParent.convertColor();
+            node.convertColor();
+        }else {
+            parent.convertColor();
+            grandParent.convertColor();
         }
-        parent.convertColor();
-        grandParent.convertColor();
         rotateRight(grandParent);
         fixTree(node.isLeft()? parent :grandParent); //was a left left or left right
     }
     private void fixRight(RedBlackNode node,RedBlackNode parent,RedBlackNode grandParent){
         if(node.isLeft()){//change right left to right right
             rotateRight(parent);
+            grandParent.convertColor();
+            node.convertColor();
+        }else {
+            parent.convertColor();
+            grandParent.convertColor();
         }
-        parent.convertColor();
-        grandParent.convertColor();
         rotateLeft(grandParent);
         fixTree(!node.isLeft()? parent :grandParent); //was a right right or  right left
     }
