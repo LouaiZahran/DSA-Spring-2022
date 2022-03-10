@@ -122,6 +122,8 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     }
     private void rotateLeft(RedBlackNode node){
         RedBlackNode rightNode =(RedBlackNode) node.getRight();
+        if(rightNode==null)
+            return;
         RedBlackNode tempNode = (RedBlackNode) rightNode.getLeft();
 
         rightNode.setLeft(node);
@@ -144,6 +146,8 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     }
     private void rotateRight(RedBlackNode node){
         RedBlackNode leftNode =(RedBlackNode) node.getLeft();
+        if(leftNode==null)
+            return;
         RedBlackNode tempNode = (RedBlackNode) leftNode.getRight();
 
         leftNode.setRight(node);
