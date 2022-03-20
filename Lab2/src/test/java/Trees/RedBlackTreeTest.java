@@ -20,12 +20,10 @@ class RedBlackTreeTest {
     @Test
     void delete() {
         insert();
-        int arr[] = {5, 3, 76, 3, 72, 4, 8};
+        int arr[] = {5, 3, 76, 9, 72, 4, 8};
         for(int i=0; i<arr.length; i++) {
             tree.delete(arr[i]);
-            //assertFalse(tree.search(arr[i]));
-            tree.traverse();
-            System.out.println();
+            assertFalse(tree.search(arr[i]));
         }
     }
 }

@@ -37,8 +37,11 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     }
 
     private AbstractNode insert(AbstractNode node,AbstractNode newNode) throws IllegalArgumentException{
-        if(node == null) {
+        if(node == null || ((RedBlackNode<T>)node).isNullLeaf()) {
             this.size++;
+            if(size == 1){
+                ((RedBlackNode<T>)newNode).setColor(BLACK);
+            }
             return newNode;
         }
 
@@ -81,7 +84,10 @@ public class RedBlackTree<T> extends AbstractTree<T> {
             }
         }
         //search for the node to be deleted.
-        if((int)node.getValue() < (int)data) {
+        String currentValue = String.valueOf(node.getValue());
+        String deletedValue = String.valueOf(data);
+        int comp = currentValue.compareToIgnoreCase(deletedValue);
+        if(comp < 0) {
             delete((RedBlackNode<T>) node.getRight(), data, rootRef);
         } else {
             delete((RedBlackNode<T>) node.getLeft(), data, rootRef);
@@ -276,6 +282,8 @@ public class RedBlackTree<T> extends AbstractTree<T> {
             } else {
                 fixRight(node, parent, grandParent);
             }
+        }else if(node == root){
+            node.setColor(BLACK);
         }
     }
 
@@ -287,26 +295,26 @@ public class RedBlackTree<T> extends AbstractTree<T> {
     }
     private void fixLeft(RedBlackNode node,RedBlackNode parent,RedBlackNode grandParent){
         if(!node.isLeft()){//change left right to left left
-            leftRotate(parent, false);
+            rotateLeft(parent);
             grandParent.convertColor();
             node.convertColor();
         }else {
             parent.convertColor();
             grandParent.convertColor();
         }
-        rightRotate(grandParent, false);
+        rotateRight(grandParent);
         fixTree(node.isLeft()? parent :grandParent); //was a left left or left right
     }
     private void fixRight(RedBlackNode node,RedBlackNode parent,RedBlackNode grandParent){
         if(node.isLeft()){//change right left to right right
-            rightRotate(parent, false);
+            rotateRight(parent);
             grandParent.convertColor();
             node.convertColor();
         }else {
             parent.convertColor();
             grandParent.convertColor();
         }
-        leftRotate(grandParent, false);
+        rotateLeft(grandParent);
         fixTree(!node.isLeft()? parent :grandParent); //was a right right or  right left
     }
 
@@ -354,6 +362,40 @@ public class RedBlackTree<T> extends AbstractTree<T> {
             root.setColor(Color.BLACK);
             parent.setColor(Color.RED);
         }
+    }
+
+    private void rotateRight(RedBlackNode node){
+        RedBlackNode leftNode =(RedBlackNode) node.getLeft();
+        if(leftNode==null)
+            return;
+        RedBlackNode tempNode = (RedBlackNode) leftNode.getRight();
+
+        leftNode.setRight(node);
+        node.setLeft(tempNode);
+
+        if(tempNode!=null){
+            tempNode.setParentNode(node);
+        }
+        leftNode.setParentNode(node.getParentNode());
+        updateChildrenOfParentNode(node,leftNode);
+        node.setParentNode(leftNode);
+    }
+
+    private void rotateLeft(RedBlackNode node){
+        RedBlackNode rightNode =(RedBlackNode) node.getRight();
+        if(rightNode==null)
+            return;
+        RedBlackNode tempNode = (RedBlackNode) rightNode.getLeft();
+
+        rightNode.setLeft(node);
+        node.setRight(tempNode);
+
+        if(tempNode!=null){
+            tempNode.setParentNode(node);
+        }
+        rightNode.setParentNode(node.getParentNode());
+        updateChildrenOfParentNode(node,rightNode);
+        node.setParentNode(rightNode);
     }
 
 }

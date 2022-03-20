@@ -11,7 +11,7 @@ import static java.awt.Color.BLACK;
 @Setter @Getter
 public class RedBlackNode<T> extends AbstractNode<T>{
 
-    private Color color = RED;
+    private Color color;
     private RedBlackNode parentNode;
     private boolean isNullLeaf;
 
@@ -21,6 +21,7 @@ public class RedBlackNode<T> extends AbstractNode<T>{
 
     RedBlackNode(T value) {
         super(value);
+        color = RED;
         isNullLeaf = false;
         setLeft(createNullLeaf());
         setRight(createNullLeaf());
@@ -28,14 +29,15 @@ public class RedBlackNode<T> extends AbstractNode<T>{
 
     private AbstractNode<T> createNullLeaf(){
         RedBlackNode<T> node = new RedBlackNode<>();
-        isNullLeaf = true;
-        color = BLACK;
+        node.isNullLeaf = true;
+        node.color = BLACK;
         return node;
     }
 
     public void convertColor() {
         setColor(color == RED ? BLACK : RED);
     }
+
     public boolean isLeft(){
         if(parentNode == null)
             return false;
