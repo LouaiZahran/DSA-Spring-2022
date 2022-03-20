@@ -63,13 +63,13 @@ public class RedBlackTree<T> extends AbstractTree<T> {
      * double pointer in C.
      */
     private void delete(RedBlackNode<T> node, T data, AtomicReference<RedBlackNode<T>> rootRef) {
-        if(node == null) {
+        if(node == null || node.isNullLeaf()) {
             return;
         }
         if(node.getValue() == data) {
             //if node to be deleted has 0 or 1 null children then we have
             //deleteOneChild use case as discussed in video.
-            if(node.getLeft() == null || node.getRight() == null) {
+            if(((RedBlackNode<T>)(node.getLeft())).isNullLeaf() || ((RedBlackNode<T>)(node.getRight())).isNullLeaf()) {
                 deleteOneChild(node, rootRef);
             } else {
                 //otherwise look for the inorder successor in right subtree.
@@ -90,18 +90,18 @@ public class RedBlackTree<T> extends AbstractTree<T> {
 
     private RedBlackNode<T> findSmallest(RedBlackNode<T> subtreeRoot) {
         RedBlackNode<T> prev = null;
-        while(subtreeRoot != null) {
+        while(subtreeRoot != null && !subtreeRoot.isNullLeaf()) {
             prev = subtreeRoot;
             subtreeRoot = (RedBlackNode<T>) subtreeRoot.getLeft();
         }
-        return prev;
+        return prev != null ? prev : subtreeRoot;
     }
 
     /**
      * Assumption that node to be deleted has either 0 or 1 non leaf child
      */
     private void deleteOneChild(RedBlackNode<T> nodeToBeDelete, AtomicReference<RedBlackNode<T>> rootRef) {
-        RedBlackNode<T> child = (RedBlackNode<T>) (nodeToBeDelete.getRight() == null ? nodeToBeDelete.getLeft() : nodeToBeDelete.getRight());
+        RedBlackNode<T> child = (RedBlackNode<T>) (((RedBlackNode<T>)(nodeToBeDelete.getRight())).isNullLeaf() ? nodeToBeDelete.getLeft() : nodeToBeDelete.getRight());
         //replace node with either one not null child if it exists or null child.
         replaceNode(nodeToBeDelete, child, rootRef);
         //if the node to be deleted is BLACK. See if it has one red child.
@@ -137,12 +137,10 @@ public class RedBlackTree<T> extends AbstractTree<T> {
 
     private RedBlackNode<T> findSiblingNode(RedBlackNode<T> node) {
         RedBlackNode<T> parent = node.getParentNode();
-        if(parent == null)
-            return null;
         if(node.isLeft()) {
-            return (RedBlackNode<T>) parent.getRight();
+            return ((RedBlackNode<T>)parent.getRight()).isNullLeaf() ? null : (RedBlackNode<T>)parent.getRight();
         } else {
-            return (RedBlackNode<T>) parent.getLeft();
+            return ((RedBlackNode<T>)parent.getLeft()).isNullLeaf() ? null : (RedBlackNode<T>)parent.getLeft();
         }
     }
 

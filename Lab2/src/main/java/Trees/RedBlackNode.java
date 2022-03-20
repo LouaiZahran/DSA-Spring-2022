@@ -11,10 +11,26 @@ import static java.awt.Color.BLACK;
 @Setter @Getter
 public class RedBlackNode<T> extends AbstractNode<T>{
 
-    private Color color= RED;
+    private Color color = RED;
     private RedBlackNode parentNode;
+    private boolean isNullLeaf;
+
+    RedBlackNode(){
+        super(null);
+    };
+
     RedBlackNode(T value) {
         super(value);
+        isNullLeaf = false;
+        setLeft(createNullLeaf());
+        setRight(createNullLeaf());
+    }
+
+    private AbstractNode<T> createNullLeaf(){
+        RedBlackNode<T> node = new RedBlackNode<>();
+        isNullLeaf = true;
+        color = BLACK;
+        return node;
     }
 
     public void convertColor() {
