@@ -26,10 +26,9 @@ public class Analysis {
         ArrayList<Double> insertionAvgTimeArr = new ArrayList<>();
         ArrayList<Double> deletionAvgTimeArr = new ArrayList<>();
 
-        double sumDeletion = 0;
-        double sumInsertion = 0;
-
         for (int i = 10; i <= 1000000; i *= 10) {
+            double sumDeletion = 0;
+            double sumInsertion = 0;
             for (int k = 0; k < 10; k++) {
                 stringArrayList.clear();
                 for (int j = 0; j < i; j++) {

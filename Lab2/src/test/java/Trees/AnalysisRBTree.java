@@ -24,18 +24,18 @@ public class AnalysisRBTree {
         ArrayList<Double> insertionAvgTime=new ArrayList<>();
         ArrayList<Double> deletionAvgTime=new ArrayList<>();
         ArrayList<String> arrayToDelete=new ArrayList<>();
-        double timeAvg=0;
         double sum=0;
         for(int i=1;i<=1000000;i*=10){
+            sum = 0;
             for (int j=0;j<i;j++){
                 String str=getString(40);
                 arrayToDelete.add(str);
                 startTime=System.nanoTime();
                 tree.insert(str);
                 endTime=System.nanoTime()-startTime;
-                sum+=(double) endTime;
+                sum+=(double)endTime/1000000; //Convert to millis
             }
-            insertionAvgTime.add(sum/i);
+            insertionAvgTime.add(sum);
             sum=0;
             for (int j=0;j<i;j++){
                 int index=(int) (Math.random()*arrayToDelete.size())-1;
@@ -43,19 +43,19 @@ public class AnalysisRBTree {
                 startTime=System.nanoTime();
                 tree.delete(deletedString);
                 endTime=System.nanoTime()-startTime;
-                sum+=(double) endTime;
+                sum+=(double) endTime/1000000; //Convert to millis
             }
-            deletionAvgTime.add(sum/i);
+            deletionAvgTime.add(sum);
             sum=0;
         }
         System.out.println("Insertion Avg Time");
         for(int i=0 , n = 1 ;i<insertionAvgTime.size() && n<=1000000;i++ ,n*=10){
-            System.out.println("at "+"n="+n +" :"+insertionAvgTime.get(i) + "ns");
+            System.out.println("at "+"n="+n +" :"+insertionAvgTime.get(i) + "ms");
         }
 
         System.out.println("Deletion Avg Time");
         for(int i=0 , n = 1 ;i<deletionAvgTime.size() && n<=1000000;i++ ,n*=10){
-            System.out.println("at "+"n="+n+" :"+deletionAvgTime.get(i) + "ns");
+            System.out.println("at "+"n="+n+" :"+deletionAvgTime.get(i) + "ms");
         }
     }
 
