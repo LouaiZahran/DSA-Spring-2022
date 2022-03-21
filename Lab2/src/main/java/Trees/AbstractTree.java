@@ -47,6 +47,7 @@ public abstract class AbstractTree<T> implements Tree<T>{
     @Override
     public void clear(){
         root = null;
+        size = 0;
     }
 
     @Override
