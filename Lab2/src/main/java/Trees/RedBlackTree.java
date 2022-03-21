@@ -11,15 +11,12 @@ import static java.awt.Color.BLACK;
 
 public class RedBlackTree<T> extends AbstractTree<T> {
 
-
     @Override
     public void delete(T obj) throws NoSuchElementException {
         root = delete((RedBlackNode<T>) root, obj);
+        this.size--;
     }
 
-    /**
-     * Main delete method of red black tree.
-     */
     public RedBlackNode<T> delete(RedBlackNode<T> root, T data) {
         AtomicReference<RedBlackNode<T>> rootReference = new AtomicReference<>();
         delete(root, data, rootReference);
@@ -61,28 +58,20 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         return node;
     }
 
-    /**
-     * Using atomicreference because java does not provide mutable wrapper. Its like
-     * double pointer in C.
-     */
     private void delete(RedBlackNode<T> node, T data, AtomicReference<RedBlackNode<T>> rootRef) {
         if(node == null || node.isNullLeaf()) {
             return;
         }
         if(node.getValue() == data) {
-            //if node to be deleted has 0 or 1 null children then we have
-            //deleteOneChild use case as discussed in video.
             if(((RedBlackNode<T>)(node.getLeft())).isNullLeaf() || ((RedBlackNode<T>)(node.getRight())).isNullLeaf()) {
                 deleteOneChild(node, rootRef);
             } else {
-                //otherwise look for the inorder successor in right subtree.
-                //replace inorder successor data at root data.
-                //then delete inorder successor which should have 0 or 1 not null child.
                 RedBlackNode<T> inorderSuccessor = findSmallest((RedBlackNode<T>) node.getRight());
                 node.setValue(inorderSuccessor.getValue());
                 delete((RedBlackNode<T>) node.getRight(), inorderSuccessor.getValue(), rootRef);
             }
         }
+
         //search for the node to be deleted.
         String currentValue = String.valueOf(node.getValue());
         String deletedValue = String.valueOf(data);
@@ -103,9 +92,6 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         return prev != null ? prev : subtreeRoot;
     }
 
-    /**
-     * Assumption that node to be deleted has either 0 or 1 non leaf child
-     */
     private void deleteOneChild(RedBlackNode<T> nodeToBeDelete, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> child = (RedBlackNode<T>) (((RedBlackNode<T>)(nodeToBeDelete.getRight())).isNullLeaf() ? nodeToBeDelete.getLeft() : nodeToBeDelete.getRight());
         //replace node with either one not null child if it exists or null child.
@@ -122,11 +108,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         }
     }
 
-
-    /**
-     * If double black node becomes root then we are done. Turning it into
-     * single black node just reduces one black in every path.
-     */
+    //If doubly black bubbled up to root, we're done
     private void deleteCase1(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
         if(doubleBlackNode.getParentNode() == null) {
             rootRef.set(doubleBlackNode);
@@ -135,24 +117,17 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         deleteCase2(doubleBlackNode, rootRef);
     }
 
-    /**
-     * If sibling is red and parent and sibling's children are black then rotate it
-     * so that sibling becomes black. Double black node is still double black so we need
-     * further processing.
-     */
-
     private RedBlackNode<T> findSiblingNode(RedBlackNode<T> node) {
         RedBlackNode<T> parent = node.getParentNode();
         if(node.isLeft()) {
-            return ((RedBlackNode<T>)parent.getRight()).isNullLeaf() ? null : (RedBlackNode<T>)parent.getRight();
+            return ((RedBlackNode<T>)parent.getRight());
         } else {
-            return ((RedBlackNode<T>)parent.getLeft()).isNullLeaf() ? null : (RedBlackNode<T>)parent.getLeft();
+            return ((RedBlackNode<T>)parent.getLeft());
         }
     }
-
+    //sibling is red, sibling left child is black and right is black
     private void deleteCase2(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> siblingNode = findSiblingNode(doubleBlackNode);
-        assert siblingNode != null;
         if(siblingNode.getColor() == Color.RED) {
             if(siblingNode.isLeft()) {
                 rightRotate(siblingNode, true);
@@ -166,19 +141,16 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         deleteCase3(doubleBlackNode, rootRef);
     }
 
-    /**
-     * If sibling, sibling's children and parent are all black then turn sibling into red.
-     * This reduces black node for both the paths from parent. Now parent is new double black
-     * node which needs further processing by going back to case1.
-     */
+    //sibling is black, sibling left child is black and right is black and parent is black
     private void deleteCase3(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
 
         RedBlackNode<T> siblingNode = findSiblingNode(doubleBlackNode);
 
-        if(doubleBlackNode.getParentNode().getColor() == Color.BLACK
-                && siblingNode.getColor() == Color.BLACK
+        if(siblingNode == null || siblingNode.isNullLeaf());
+        else if(doubleBlackNode.getParentNode().getColor() == Color.BLACK && ((
+                    siblingNode.getColor() == Color.BLACK
                 && ((RedBlackNode<T>)siblingNode.getLeft()).getColor() == Color.BLACK
-                && ((RedBlackNode<T>)siblingNode.getRight()).getColor() == Color.BLACK) {
+                && ((RedBlackNode<T>)siblingNode.getRight()).getColor() == Color.BLACK))) {
             siblingNode.setColor(Color.RED);
             deleteCase1(doubleBlackNode.getParentNode(), rootRef);
         } else {
@@ -186,17 +158,14 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         }
     }
 
-    /**
-     * If sibling color is black, parent color is red and sibling's children color is black then swap color b/w sibling
-     * and parent. This increases one black node on double black node path but does not affect black node count on
-     * sibling path. We are done if we hit this situation.
-     */
+    //parent is red, sibling is black, sibling left child is black and right is black
     private void deleteCase4(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> siblingNode = findSiblingNode(doubleBlackNode);
-        if(doubleBlackNode.getParentNode().getColor() == Color.RED
-                && siblingNode.getColor() == Color.BLACK
+        if(siblingNode == null || siblingNode.isNullLeaf());
+        else if(doubleBlackNode.getParentNode().getColor() == Color.RED && ((
+                   siblingNode.getColor() == Color.BLACK
                 && ((RedBlackNode<T>)siblingNode.getLeft()).getColor() == Color.BLACK
-                && ((RedBlackNode<T>)siblingNode.getRight()).getColor() == Color.BLACK) {
+                && ((RedBlackNode<T>)siblingNode.getRight()).getColor() == Color.BLACK))) {
             siblingNode.setColor(Color.RED);
             doubleBlackNode.getParentNode().setColor(Color.BLACK);
         } else {
@@ -204,11 +173,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         }
     }
 
-    /**
-     * If sibling is black, double black node is left child of its parent, siblings right child is black
-     * and sibling's left child is red then do a right rotation at siblings left child and swap colors.
-     * This converts it to delete case6. It will also have a mirror case.
-     */
+    //doubly black is left, sibling is black, sibling left child is black and right is red
     private void deleteCase5(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> siblingNode = findSiblingNode(doubleBlackNode);
         if(siblingNode.getColor() == Color.BLACK) {
@@ -225,12 +190,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         deleteCase6(doubleBlackNode, rootRef);
     }
 
-    /**
-     * If sibling is black, double black node is left child of its parent, sibling left child is black and sibling's right child is
-     * red, sibling takes its parent color, parent color becomes black, sibling's right child becomes black and then do
-     * left rotation at sibling without any further change in color. This removes double black and we are done. This
-     * also has a mirror condition.
-     */
+    //doubly black is a left child, sibling is black, sibling left child is black and right child is red
     private void deleteCase6(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> siblingNode = findSiblingNode(doubleBlackNode);
         siblingNode.setColor(siblingNode.getParentNode().getColor());
@@ -351,6 +311,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
                 parent.getParentNode().setLeft(root);
             }
         }
+
         RedBlackNode<T> left = (RedBlackNode<T>) root.getLeft();
         root.setLeft(parent);
         parent.setParentNode(root);
