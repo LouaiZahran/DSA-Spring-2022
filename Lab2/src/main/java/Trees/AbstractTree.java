@@ -2,29 +2,40 @@ package Trees;
 
 import java.util.NoSuchElementException;
 
+/**
+ * An abstract model of any BST
+ * @param <T> wildcard to support any datatype
+ */
 public abstract class AbstractTree<T> implements Tree<T>{
 
     AbstractNode<T> root;
     int size = 0;
 
     @Override
-    public boolean search(T obj){
+    public AbstractNode<T> search(T obj){
         return search(root, obj);
     }
 
-    private boolean search(AbstractNode node, T obj){
+    private AbstractNode<T> search(AbstractNode node, T obj){
         if(node == null)
-            return false;
+            return null;
 
         String currentValue = String.valueOf(node.getValue());
         String insertedValue = String.valueOf(obj);
         int comp = currentValue.compareToIgnoreCase(insertedValue);
         if(comp == 0)
-            return true;
+            return node;
         else if(comp > 0)
             return search(node.getLeft(), obj);
         else
             return search(node.getRight(), obj);
+    }
+
+    @Override
+    public boolean contains(T obj) {
+        if(search(obj) == null)
+            return false;
+        return true;
     }
 
     @Override
@@ -62,6 +73,11 @@ public abstract class AbstractTree<T> implements Tree<T>{
         return getMax(root);
     }
 
+    /**
+     * Internally traversing the tree to get the maximum element
+     * @param node the current maximum
+     * @return the maximum value across the BST
+     */
     protected T getMax(AbstractNode<T> node){
         if(!node.hasRight())
             return node.getValue();
@@ -74,6 +90,11 @@ public abstract class AbstractTree<T> implements Tree<T>{
         return getMin(root);
     }
 
+    /**
+     * Internally traversing the tree to get the minimum element
+     * @param node the current minimum
+     * @return the minimum value across the BST
+     */
     protected T getMin(AbstractNode<T> node){
         if(!node.hasLeft())
             return node.getValue();

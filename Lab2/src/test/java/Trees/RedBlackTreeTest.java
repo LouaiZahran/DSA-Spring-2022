@@ -13,7 +13,7 @@ class RedBlackTreeTest {
         int arr[] = {5, 3, 76, 9, 72, 4, 8};
         for(int i=0; i<arr.length; i++) {
             tree.insert(arr[i]);
-            assertTrue(tree.search(arr[i]));
+            assertTrue(tree.contains(arr[i]));
         }
     }
 
@@ -23,7 +23,7 @@ class RedBlackTreeTest {
         int arr[] = {5, 3, 76, 9, 72, 4, 8};
         for(int i=0; i<arr.length; i++) {
             tree.delete(arr[i]);
-            assertFalse(tree.search(arr[i]));
+            assertFalse(tree.contains(arr[i]));
         }
     }
 }

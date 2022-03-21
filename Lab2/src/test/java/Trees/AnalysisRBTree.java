@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+/**
+ * A class to analyze th RBTree performance
+ */
 public class AnalysisRBTree {
     String getString(int n){
         String stringFactory="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -16,6 +19,10 @@ public class AnalysisRBTree {
         }
         return ret;
     }
+
+    /**
+     * A method that computes the average time of operations on different number of nodes
+     */
     @Test
     public void AnalyseRB(){
         long startTime=0;

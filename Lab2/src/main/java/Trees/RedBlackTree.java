@@ -9,6 +9,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.awt.Color.RED;
 import static java.awt.Color.BLACK;
 
+/**
+ * Our implementation for the RBTree
+ * @author Louai Zahran
+ * @author AbdelRahman Bahaa
+ */
 public class RedBlackTree<T> extends AbstractTree<T> {
 
     public void insert(T obj) throws IllegalArgumentException{
@@ -47,6 +52,12 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         this.size--;
     }
 
+    /**
+     * Handles the deletion of the nodes given the args from the interface
+     * @param root the root of the tree
+     * @param data the value to be deleted
+     * @return the new root
+     */
     public RedBlackNode<T> delete(RedBlackNode<T> root, T data) {
         AtomicReference<RedBlackNode<T>> rootReference = new AtomicReference<>();
         delete(root, data, rootReference);
@@ -56,7 +67,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
             return rootReference.get();
         }
     }
-    
+
     private void delete(RedBlackNode<T> node, T data, AtomicReference<RedBlackNode<T>> rootRef) {
         if(node == null || node.isNullLeaf()) {
             return;

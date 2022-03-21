@@ -11,7 +11,15 @@ public interface Tree<T> {
      * @param obj the key to be searched
      * @return a boolean value that is true if the key is found and false otherwise
      */
-    boolean search(T obj);
+    boolean contains(T obj);
+
+    /**
+     * Search the tree for the specified key
+     * @param obj the key to be searched
+     * @return the node containing the key if found and null otherwise
+     */
+    AbstractNode<T> search(T obj);
+
 
     /**
      * Inserts a node holding the value of the key to the tree
