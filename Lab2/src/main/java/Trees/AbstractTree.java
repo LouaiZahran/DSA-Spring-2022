@@ -108,7 +108,7 @@ public abstract class AbstractTree<T> implements Tree<T>{
 
     @Override
     public boolean isEmpty(){
-        return root == null;
+        return size == 0;
     }
 
 }
