@@ -11,22 +11,6 @@ import static java.awt.Color.BLACK;
 
 public class RedBlackTree<T> extends AbstractTree<T> {
 
-    @Override
-    public void delete(T obj) throws NoSuchElementException {
-        root = delete((RedBlackNode<T>) root, obj);
-        this.size--;
-    }
-
-    public RedBlackNode<T> delete(RedBlackNode<T> root, T data) {
-        AtomicReference<RedBlackNode<T>> rootReference = new AtomicReference<>();
-        delete(root, data, rootReference);
-        if(rootReference.get() == null) {
-            return root;
-        } else {
-            return rootReference.get();
-        }
-    }
-
     public void insert(T obj) throws IllegalArgumentException{
         AbstractNode node = new RedBlackNode(obj);
         root = insert(root, node);
@@ -58,6 +42,21 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         return node;
     }
 
+    public void delete(T obj) throws NoSuchElementException {
+        root = delete((RedBlackNode<T>) root, obj);
+        this.size--;
+    }
+
+    public RedBlackNode<T> delete(RedBlackNode<T> root, T data) {
+        AtomicReference<RedBlackNode<T>> rootReference = new AtomicReference<>();
+        delete(root, data, rootReference);
+        if(rootReference.get() == null) {
+            return root;
+        } else {
+            return rootReference.get();
+        }
+    }
+    
     private void delete(RedBlackNode<T> node, T data, AtomicReference<RedBlackNode<T>> rootRef) {
         if(node == null || node.isNullLeaf()) {
             return;
@@ -92,6 +91,15 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         return prev != null ? prev : subtreeRoot;
     }
 
+    private RedBlackNode<T> findSiblingNode(RedBlackNode<T> node) {
+        RedBlackNode<T> parent = node.getParentNode();
+        if(node.isLeft()) {
+            return ((RedBlackNode<T>)parent.getRight());
+        } else {
+            return ((RedBlackNode<T>)parent.getLeft());
+        }
+    }
+
     private void deleteOneChild(RedBlackNode<T> nodeToBeDelete, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> child = (RedBlackNode<T>) (((RedBlackNode<T>)(nodeToBeDelete.getRight())).isNullLeaf() ? nodeToBeDelete.getLeft() : nodeToBeDelete.getRight());
         //replace node with either one not null child if it exists or null child.
@@ -117,14 +125,6 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         deleteCase2(doubleBlackNode, rootRef);
     }
 
-    private RedBlackNode<T> findSiblingNode(RedBlackNode<T> node) {
-        RedBlackNode<T> parent = node.getParentNode();
-        if(node.isLeft()) {
-            return ((RedBlackNode<T>)parent.getRight());
-        } else {
-            return ((RedBlackNode<T>)parent.getLeft());
-        }
-    }
     //sibling is red, sibling left child is black and right is black
     private void deleteCase2(RedBlackNode<T> doubleBlackNode, AtomicReference<RedBlackNode<T>> rootRef) {
         RedBlackNode<T> siblingNode = findSiblingNode(doubleBlackNode);
@@ -253,6 +253,7 @@ public class RedBlackTree<T> extends AbstractTree<T> {
         grandParent.convertColor();
         fixTree(grandParent);
     }
+
     private void fixLeft(RedBlackNode node,RedBlackNode parent,RedBlackNode grandParent){
         if(!node.isLeft()){//change left right to left left
             rotateLeft(parent);
