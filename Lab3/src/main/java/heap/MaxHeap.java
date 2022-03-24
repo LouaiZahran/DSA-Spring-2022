@@ -22,7 +22,7 @@ public class MaxHeap {
         for(int i=0; i<n; i++)
             heap[i] = arr[i];
 
-        for(int i=0; i<n; i++)
+        for(int i=n/2-1;i>=0; i--)
             maxHeapify(i);
     }
 
@@ -43,13 +43,18 @@ public class MaxHeap {
             return;
         int leftChild = current*2 + 1;
         int rightChild = current*2 + 2;
-        if(leftChild < size && heap[current] < heap[leftChild]){
-            swap(current, leftChild);
-            maxHeapify(leftChild);
-        }else if(rightChild < size && heap[current] < heap[rightChild]){
-            swap(current, rightChild);
-            maxHeapify(rightChild);
+        int largest=current;
+        if(leftChild < size && heap[largest] < heap[leftChild]){
+            largest=leftChild;
         }
+        if(rightChild < size && heap[largest] < heap[rightChild]){
+            largest=rightChild;
+        }
+        if(largest!=current) {
+            swap(largest,current);
+            maxHeapify(largest);
+        }
+
     }
 
     public void insert(int n) throws SizeLimitExceededException{
@@ -75,7 +80,7 @@ public class MaxHeap {
         int max = getMax();
         size--;
         if(size != 0) {
-            heap[0] = heap[size];
+            swap(0,size);
             maxHeapify(0);
         }
         return max;
