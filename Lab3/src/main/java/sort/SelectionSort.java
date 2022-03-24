@@ -1,8 +1,9 @@
 package sort;
 
-public class SelectionSort
+public class SelectionSort implements Sorting
 {
-    public static void sort(int arr[]){
+    @Override
+    public void sort(int arr[]){
         for(int i=0;i<arr.length-1;i++){
             //find min value index
             int minValueIndex=i;
@@ -16,7 +17,7 @@ public class SelectionSort
             }
         }
     }
-    private static void swap(int arr[], int a, int b){
+    private void swap(int arr[], int a, int b){
         int tmp = arr[a];
         arr[a] = arr[b];
         arr[b] = tmp;

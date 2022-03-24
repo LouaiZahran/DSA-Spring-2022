@@ -1,11 +1,12 @@
 package sort;
 
-public class MergeSort {
-    public static void sort(int arr[]){
+public class MergeSort  implements Sorting {
+    @Override
+    public void sort(int arr[]){
         sort(arr, 0, arr.length-1);
     }
 
-    private static void sort(int arr[], int l, int r){
+    private void sort(int arr[], int l, int r){
         if(l >= r)
             return;
 
@@ -15,7 +16,7 @@ public class MergeSort {
         merge(arr, l, m, r);
     }
 
-    private static void merge(int arr[], int l, int m, int r){
+    private void merge(int arr[], int l, int m, int r){
         int ptr1 = 0, ptr2 = 0;
         int leftArr[] = new int[m-l+1];
         int rightArr[] = new int[r-m];
