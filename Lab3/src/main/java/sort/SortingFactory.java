@@ -1,7 +1,7 @@
 package sort;
 
 public class SortingFactory {
-    public Sorting getSort(String sortingType){
+    public static Sorting getSort(String sortingType){
         if(sortingType==null)
             return null;
         if(sortingType.equalsIgnoreCase("BUBLESORT")){
