@@ -27,7 +27,7 @@ public class Main {
 
         sort=SortingFactory.getSort("InsertionSort");
         data.changeSort(sort);
-        MaxHeap.sort(arr);      //Descending
+        MaxHeap.sort(arr);      //Descendingw
         System.out.println(Arrays.toString(arr));
         data.sort();
         System.out.println(Arrays.toString(arr)); //insertionSort
