@@ -27,6 +27,8 @@ public class MaxHeap {
     }
 
     public static void sort(int arr[]){
+        if(arr.length==0)
+            return;
         MaxHeap heap = new MaxHeap(arr);
         for(int i=0; i<arr.length; i++)
             arr[i] = heap.extractMax();

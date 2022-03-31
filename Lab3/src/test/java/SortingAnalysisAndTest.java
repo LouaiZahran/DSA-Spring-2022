@@ -1,12 +1,11 @@
 import Data.Data;
+import heap.MaxHeap;
 import org.junit.Test;
 import sort.QuickSort;
 import sort.Sorting;
 import sort.SortingFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,11 +25,26 @@ public class SortingAnalysisAndTest {
             assertEquals(clone[i],arr[i],"Array not Sorted "+method);
         }
     }
+    void testDescending(int[]arr,String method){
+        Integer[] clone =new Integer[arr.length];
+        for(int i=0;i<arr.length;i++){
+            clone[i]=arr[i];
+        }
+        Arrays.sort(clone, Collections.reverseOrder());
+        for(int i=0;i<arr.length;i++){
+            assertEquals(clone[i],arr[i],"Array not Sorted "+method);
+        }
+    }
     long testSort(int[] clone,String string){
 
         Data data=new Data(clone,string);
         long startTime=System.nanoTime();
         data.sort();
+        return System.nanoTime()-startTime;
+    }
+    long testHeap(int[] clone){
+        long startTime=System.nanoTime();
+        MaxHeap.sort(clone);
         return System.nanoTime()-startTime;
     }
     @Test
@@ -40,8 +54,8 @@ public class SortingAnalysisAndTest {
         ArrayList<Long> quickSortTime=new ArrayList<>();
         ArrayList<Long> bubleSortTime=new ArrayList<>();
         ArrayList<Long> selectionSortTime=new ArrayList<>();
-        double sum=0;
-        for(int i=0;i<=10000;i=i*10) {
+        ArrayList<Long> heapSortTime=new ArrayList<>();
+        for(int i=0;i<=100000;i=i*10) {
             int[] arr = createArray(i);
             int[] clone =new int[i];
             System.arraycopy(arr,0,clone,0,i);
@@ -64,36 +78,49 @@ public class SortingAnalysisAndTest {
             selectionSortTime.add(testSort(clone,"SelectionSort"));
             testAscending(clone,"selection sort");
 
+            System.arraycopy(arr,0,clone,0,i);
+            heapSortTime.add(testHeap(clone));
+            testDescending(clone,"max heap");
+
             if (i == 0)
                 i++;
         }
+        System.out.println("heap sort Time");
+        for(int i=0 , n = 0 ;i<heapSortTime.size();i++ ,n*=10){
+            System.out.println("at "+"n="+n+" :"+heapSortTime.get(i) + " ns");
+            if (n == 0)
+                n++;
+        }
+
+
         System.out.println("Merge Sort Time");
         for(int i=0 , n = 0 ;i<mergeSortTime.size();i++ ,n*=10){
-            System.out.println("at "+"n="+n+" :"+mergeSortTime.get(i) + "ns");
+            System.out.println("at "+"n="+n+" :"+mergeSortTime.get(i) + " ns");
             if (n == 0)
                 n++;
         }
         System.out.println("insertion sort Time");
         for(int i=0 , n = 0 ;i<insertionSortTime.size();i++ ,n*=10){
-            System.out.println("at "+"n="+n+" :"+insertionSortTime.get(i) + "ns");
+            System.out.println("at "+"n="+n+" :"+insertionSortTime.get(i) + " ns");
             if (n == 0)
                 n++;
         }System.out.println("Quick sort Time");
         for(int i = 0, n = 0; i< quickSortTime.size(); i++ ,n*=10){
-            System.out.println("at "+"n="+n+" :"+quickSortTime.get(i) + "ns");
+            System.out.println("at "+"n="+n+" :"+quickSortTime.get(i) + " ns");
             if (n == 0)
                 n++;
         }System.out.println("Selection sort Time");
         for(int i=0 , n = 0 ;i<selectionSortTime.size();i++ ,n*=10){
-            System.out.println("at "+"n="+n+" :"+selectionSortTime.get(i) + "ns");
+            System.out.println("at "+"n="+n+" :"+selectionSortTime.get(i) + " ns");
             if (n == 0)
                 n++;
         }System.out.println("bubble sort Time");
         for(int i=0 , n = 0 ;i<bubleSortTime.size();i++ ,n*=10){
-            System.out.println("at "+"n="+n+" :"+bubleSortTime.get(i) + "ns");
+            System.out.println("at "+"n="+n+" :"+bubleSortTime.get(i) + " ns");
             if (n == 0)
                 n++;
         }
+
 
     }
 
