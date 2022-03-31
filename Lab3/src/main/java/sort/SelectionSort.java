@@ -8,7 +8,7 @@ public class SelectionSort implements Sorting
             //find min value index
             int minValueIndex=i;
             for(int j=i+1;j<arr.length;j++){
-                if(arr[j]<arr[i]){
+                if(arr[j]<arr[minValueIndex]){
                     minValueIndex=j;
                 }
             }
