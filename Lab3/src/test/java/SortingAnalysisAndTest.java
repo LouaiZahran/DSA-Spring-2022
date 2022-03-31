@@ -1,10 +1,12 @@
 import Data.Data;
 import org.junit.Test;
+import sort.QuickSort;
 import sort.Sorting;
 import sort.SortingFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,8 +35,6 @@ public class SortingAnalysisAndTest {
     }
     @Test
     public void run(){
-        long executeTime=0;
-        long endTime=0;
         ArrayList<Long> mergeSortTime=new ArrayList<>();
         ArrayList<Long> insertionSortTime=new ArrayList<>();
         ArrayList<Long> quickSortTime=new ArrayList<>();
@@ -66,6 +66,33 @@ public class SortingAnalysisAndTest {
 
             if (i == 0)
                 i++;
+        }
+        System.out.println("Merge Sort Time");
+        for(int i=0 , n = 0 ;i<mergeSortTime.size();i++ ,n*=10){
+            System.out.println("at "+"n="+n+" :"+mergeSortTime.get(i) + "ns");
+            if (n == 0)
+                n++;
+        }
+        System.out.println("insertion sort Time");
+        for(int i=0 , n = 0 ;i<insertionSortTime.size();i++ ,n*=10){
+            System.out.println("at "+"n="+n+" :"+insertionSortTime.get(i) + "ns");
+            if (n == 0)
+                n++;
+        }System.out.println("Quick sort Time");
+        for(int i = 0, n = 0; i< quickSortTime.size(); i++ ,n*=10){
+            System.out.println("at "+"n="+n+" :"+quickSortTime.get(i) + "ns");
+            if (n == 0)
+                n++;
+        }System.out.println("Selection sort Time");
+        for(int i=0 , n = 0 ;i<selectionSortTime.size();i++ ,n*=10){
+            System.out.println("at "+"n="+n+" :"+selectionSortTime.get(i) + "ns");
+            if (n == 0)
+                n++;
+        }System.out.println("bubble sort Time");
+        for(int i=0 , n = 0 ;i<bubleSortTime.size();i++ ,n*=10){
+            System.out.println("at "+"n="+n+" :"+bubleSortTime.get(i) + "ns");
+            if (n == 0)
+                n++;
         }
 
     }
