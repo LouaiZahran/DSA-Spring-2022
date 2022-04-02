@@ -1,9 +1,6 @@
-import Data.Data;
+import data.Data;
 import heap.MaxHeap;
 import org.junit.Test;
-import sort.QuickSort;
-import sort.Sorting;
-import sort.SortingFactory;
 
 import java.util.*;
 
@@ -57,7 +54,7 @@ public class SortingAnalysisAndTest {
             testAscending(clone,"insertion sort");
 
             System.arraycopy(arr,0,clone,0,i);
-            bubleSortTime.add(testSort(clone,"BubleSort"));
+            bubleSortTime.add(testSort(clone,"BubbleSort"));
             testAscending(clone,"bubble sort");
 
             System.arraycopy(arr,0,clone,0,i);

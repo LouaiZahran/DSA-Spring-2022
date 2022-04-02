@@ -1,7 +1,6 @@
 import heap.MaxHeap;
-import Data.Data;
+import data.Data;
 import lombok.SneakyThrows;
-import sort.MergeSort;
 import sort.Sorting;
 import sort.SortingFactory;
 
