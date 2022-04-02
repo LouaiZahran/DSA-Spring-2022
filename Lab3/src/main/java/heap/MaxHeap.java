@@ -3,8 +3,8 @@ package heap;
 import javax.naming.SizeLimitExceededException;
 
 public class MaxHeap {
-    private int heap[];
-    private int maxSize;
+    private final int[] heap;
+    private final int maxSize;
     private int size;
 
     public MaxHeap(int n){
@@ -13,25 +13,25 @@ public class MaxHeap {
         size = 0;
     }
 
-    public MaxHeap(int arr[]){
+    public MaxHeap(int[] arr){
         int n = arr.length;
-        heap = new int[2*n];
-        maxSize = 2*n;
+        heap = arr;
+        maxSize = n;
         size = n;
-
-        for(int i=0; i<n; i++)
-            heap[i] = arr[i];
 
         for(int i=n/2-1;i>=0; i--)
             maxHeapify(i);
     }
 
-    public static void sort(int arr[]){
+    public static void sort(int[] arr){
         if(arr.length==0)
             return;
         MaxHeap heap = new MaxHeap(arr);
-        for(int i=0; i<arr.length; i++)
-            arr[i] = heap.extractMax();
+        for(int i= heap.size - 1; i>=0; i--){
+            heap.swap(0, i);
+            heap.size--;
+            heap.maxHeapify(0);
+        }
     }
 
     private void swap(int a, int b){
