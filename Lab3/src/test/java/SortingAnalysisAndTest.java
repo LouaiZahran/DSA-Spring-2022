@@ -25,16 +25,6 @@ public class SortingAnalysisAndTest {
             assertEquals(clone[i],arr[i],"Array not Sorted "+method);
         }
     }
-    void testDescending(int[]arr,String method){
-        Integer[] clone =new Integer[arr.length];
-        for(int i=0;i<arr.length;i++){
-            clone[i]=arr[i];
-        }
-        Arrays.sort(clone, Collections.reverseOrder());
-        for(int i=0;i<arr.length;i++){
-            assertEquals(clone[i],arr[i],"Array not Sorted "+method);
-        }
-    }
     long testSort(int[] clone,String string){
 
         Data data=new Data(clone,string);
@@ -80,7 +70,7 @@ public class SortingAnalysisAndTest {
 
             System.arraycopy(arr,0,clone,0,i);
             heapSortTime.add(testHeap(clone));
-            testDescending(clone,"max heap");
+            testAscending(clone,"heap sort");
 
             if (i == 0)
                 i++;
