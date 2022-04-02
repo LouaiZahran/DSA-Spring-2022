@@ -1,33 +1,57 @@
 import heap.MaxHeap;
 import data.Data;
 import lombok.SneakyThrows;
-import sort.Sorting;
-import sort.SortingFactory;
 
-import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
+    static void print(int[] arr,String method){
+        System.out.println(method);
+        for(int i=0;i<arr.length;i++){
+            System.out.print(arr[i]+" ");
+        }
+        System.out.print("\n");
+    }
+    static void testSort(int[] clone,String string){
+
+        Data data=new Data(clone,string);
+        data.sort();
+    }
+    static void testHeap(int[] clone){
+        MaxHeap.sort(clone);
+    }
     @SneakyThrows
     public static void main(String[] args){
-        MaxHeap heap = new MaxHeap(100);
-        int[] arr = {2, 1, 6, 5, 3};
-        Sorting sort= SortingFactory.getSort("mergeSort");
-        Data data=new Data(arr,sort);
-        for (int j : arr) heap.insert(j);
-        for(int i=0; i<arr.length; i++)
-            System.out.println(heap.extractMax());
+        Scanner scan=new Scanner(System.in);
+        int n=scan.nextInt();
+        int[] arr = new int[n];
+        for(int i=0;i<n;i++){
+            arr[i]=scan.nextInt();
+        }
+        int[] clone =new int[n];
+        System.arraycopy(arr,0,clone,0,n);
+        testSort(clone,"mergeSort");
+        print(clone,"merge sort");
 
-        System.out.println(Arrays.toString(arr));
-        MaxHeap.sort(arr);                          //Ascending
-        System.out.println(Arrays.toString(arr));
-        data.sort();
-        System.out.println(Arrays.toString(arr));   //Mergesort
+        System.arraycopy(arr,0,clone,0,n);
+        testSort(clone,"InsertionSort");
+        print(clone,"insertion sort");
 
-        sort=SortingFactory.getSort("InsertionSort");
-        data.changeSort(sort);
-        MaxHeap.sort(arr);                          //Ascending
-        System.out.println(Arrays.toString(arr));
-        data.sort();
-        System.out.println(Arrays.toString(arr));   //InsertionSort
+        System.arraycopy(arr,0,clone,0,n);
+        testSort(clone,"BubbleSort");
+        print(clone,"bubble sort");
+
+        System.arraycopy(arr,0,clone,0,n);
+        testSort(clone,"QuickSort");
+        print(clone,"quick sort");
+
+        System.arraycopy(arr,0,clone,0,n);
+        testSort(clone,"SelectionSort");
+        print(clone,"selection sort");
+
+        System.arraycopy(arr,0,clone,0,n);
+        testHeap(clone);
+        print(clone,"heap sort");
+
     }
 }

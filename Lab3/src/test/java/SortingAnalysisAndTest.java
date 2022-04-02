@@ -9,8 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SortingAnalysisAndTest {
     int[] createArray(int n){
         int[] arr=new int[n];
+        int negative;
         for(int i=0;i<arr.length;i++){
             arr[i]=(int)(Math.random()*n);
+            negative=(int)(Math.random()*10);
+            if(negative<5)
+                arr[i]=-1*arr[i];
         }
         return arr;
     }
