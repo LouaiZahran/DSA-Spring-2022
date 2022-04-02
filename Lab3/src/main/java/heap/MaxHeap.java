@@ -27,10 +27,8 @@ public class MaxHeap {
         if(arr.length==0)
             return;
         MaxHeap heap = new MaxHeap(arr);
-        for(int i= heap.size - 1; i>=0; i--){
-            heap.swap(0, i);
-            heap.size--;
-            heap.maxHeapify(0);
+        while (heap.size!=0){
+            heap.extractMax();
         }
     }
 
