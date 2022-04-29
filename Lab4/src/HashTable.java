@@ -1,4 +1,5 @@
 public class HashTable {
+    int rebuilds;
     int maxSize;
     int maxSizeBits;
     Object[] data;
@@ -13,6 +14,7 @@ public class HashTable {
             maxSizeBits++;
         }
 
+        this.rebuilds = 0;
         this.maxSize = closestPowerOf2;
         this.maxSizeBits = maxSizeBits;
         this.data = new Object[this.maxSize];
@@ -23,6 +25,7 @@ public class HashTable {
         //this.hashFunction.print();
         for (Pair pair : pairs) {
             if (lookup(pair.key) != null) {         //If found a collision
+                this.rebuilds++;
                 this.clear();                       //Clear the hashtable
                 this.build(pairs);                  //and retry to build with a different hash function
                 return;
