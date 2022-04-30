@@ -5,4 +5,5 @@ public interface HashTable {
     void clear();
     void lookGroup(Pair[] pairs);
     void print();
+    int getProblemCounter();
 }

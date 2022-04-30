@@ -1,9 +1,9 @@
 public class MatrixMethodHashTable implements HashTable {
-    int rebuilds;
-    int maxSize;
-    int maxSizeBits;
-    Object[] data;
-    Matrix hashFunction;
+    private int rebuilds;
+   private int maxSize;
+   private int maxSizeBits;
+   private Object[] data;
+   private Matrix hashFunction;
 
     public MatrixMethodHashTable(int maxSize){
         maxSize *= maxSize;         //O(N^2) space complexity
@@ -68,5 +68,10 @@ public class MatrixMethodHashTable implements HashTable {
                 continue;
             System.out.printf("%d -> %d\n", i, (Integer)data[i]);
         }
+    }
+
+    @Override
+    public int getProblemCounter() {
+        return this.rebuilds;
     }
 }

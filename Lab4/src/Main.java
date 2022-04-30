@@ -19,7 +19,7 @@ public class Main {
             System.out.printf("%d -> %d\n", testData[i].key, (int)testData[i].value);   //Note the difference between key and hashed index
         }
 
-        TwoLevelSchemeHashTable hashTable = new TwoLevelSchemeHashTable(MAX_SIZE);
+        HashTable hashTable = new TwoLevelSchemeHashTable(MAX_SIZE);
         hashTable.build(testData);
 
         for(Pair pair: testData)
@@ -33,6 +33,6 @@ public class Main {
         System.out.println("=======================");
         hashTable.lookGroup(testData);
 
-        System.out.printf("\nNumber of collisions: %d", hashTable.collisions);
+        System.out.printf("\nNumber of Problems ( collision or rebuilds): %d", hashTable.getProblemCounter());
     }
 }

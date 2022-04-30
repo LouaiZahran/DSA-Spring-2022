@@ -10,7 +10,7 @@ public class TwoLevelSchemeHashTable implements HashTable{
       private int maxSize=0;
       private int maxSizeBits=0;
       private int lastPairIndexAdded=0;
-    int collisions=0;
+    private int collisions=0;
 
     TwoLevelSchemeHashTable(int maxSize){
         int closestPowerOf2 = 1;
@@ -120,4 +120,8 @@ public class TwoLevelSchemeHashTable implements HashTable{
         }
     }
 
+    @Override
+    public int getProblemCounter() {
+        return this.collisions;
+    }
 }
