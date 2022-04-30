@@ -4,7 +4,7 @@ public class TwoLevelSchemeHashTable implements HashTable{
     //arrayList of the bins
     private ArrayList<ArrayList<Pair>>  bins;
     private ArrayList<Integer> collisionIndices;
-    private  MatrixMethodHashTable[] matrixMethodHashTables;
+    private  HashTable[] matrixMethodHashTables;
     private Object data[];
     private Matrix hashFunction;
       private int maxSize=0;
@@ -59,9 +59,9 @@ public class TwoLevelSchemeHashTable implements HashTable{
     private void secondLevel(){
         //create hashmaps
         for(Integer collisionIndex:this.collisionIndices){
-            this.matrixMethodHashTables[collisionIndex] = new MatrixMethodHashTable(this.collisionIndices.size());
+            this.matrixMethodHashTables[collisionIndex] = new MatrixMethodHashTable(this.bins.get(collisionIndex).size());
             this.matrixMethodHashTables[collisionIndex]
-                    .build(     bins.get(collisionIndex).toArray(   new Pair[bins.get(collisionIndex).size()]   )  );
+                    .build(     bins.get(collisionIndex).toArray(   new Pair[this.bins.get(collisionIndex).size()]   )  );
         }
     }
     @Override

@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args){
-        int MAX_SIZE = 128;
+        int MAX_SIZE = 2048;
         Pair[] testData = new Pair[MAX_SIZE];
         boolean[] seen = new boolean[MAX_SIZE];
 
