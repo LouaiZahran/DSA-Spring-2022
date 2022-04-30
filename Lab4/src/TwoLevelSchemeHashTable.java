@@ -41,6 +41,16 @@ public class TwoLevelSchemeHashTable implements HashTable{
         int index = Matrix.convertToIndex(indexMatrix);
         return this.data[index]!=null;
     }
+    private void buildInsertion(Pair pair){
+        int key = pair.key;
+        Object value = pair.value;
+
+        Matrix keyMatrix = Matrix.convertToMatrix(key);
+        Matrix indexMatrix = hashFunction.multiply(keyMatrix);
+        int index = Matrix.convertToIndex(indexMatrix);
+        this.lastPairIndexAdded=index;
+        this.data[index] = value;
+    }
     private void firstLevel(Pair[] pairs){
         this.hashFunction = MatrixGenerator.generate(this.maxSizeBits, 32, 1); //(b, u) = (maxSizeBits, keyBits)
         //this.hashFunction.print();
@@ -51,7 +61,7 @@ public class TwoLevelSchemeHashTable implements HashTable{
                 this.bins.get(collisionIndex).add(pair);
                 this.collisions++;
             }else {
-                insert(pair);
+                buildInsertion(pair);
                 this.bins.get(this.lastPairIndexAdded).add(pair);
             }
         }
@@ -70,16 +80,29 @@ public class TwoLevelSchemeHashTable implements HashTable{
         secondLevel();
     }
 
+
+    private void firstLevelInsertion(Pair pair)
+    {
+        if (isCollided(pair.key)) { // collision happened
+            int collisionIndex=getHashedIndex(pair.key);
+            this.collisionIndices.add(collisionIndex);
+            this.bins.get(collisionIndex).add(pair);
+            secondLevelInsertion(pair,collisionIndex);
+            this.collisions++;
+        }else {
+            buildInsertion(pair);
+            this.bins.get(this.lastPairIndexAdded).add(pair);
+        }
+    }
+    private void secondLevelInsertion(Pair pair,int collisionIndex){
+        if(this.matrixMethodHashTables[collisionIndex]==null)
+            this.matrixMethodHashTables[collisionIndex] = new MatrixMethodHashTable(this.bins.get(collisionIndex).size());
+        this.matrixMethodHashTables[collisionIndex]
+                .build(     bins.get(collisionIndex).toArray(   new Pair[this.bins.get(collisionIndex).size()]   )  );
+    }
     @Override
     public void insert(Pair pair){
-        int key = pair.key;
-        Object value = pair.value;
-
-        Matrix keyMatrix = Matrix.convertToMatrix(key);
-        Matrix indexMatrix = hashFunction.multiply(keyMatrix);
-        int index = Matrix.convertToIndex(indexMatrix);
-        this.lastPairIndexAdded=index;
-        this.data[index] = value;
+        firstLevelInsertion(pair);
     }
 
     private int lookupFirstLevel(int key){
