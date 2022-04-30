@@ -19,7 +19,7 @@ public class Main {
             System.out.printf("%d -> %d\n", testData[i].key, (int)testData[i].value);   //Note the difference between key and hashed index
         }
 
-        HashTable2 hashTable = new HashTable2(MAX_SIZE);
+        TwoLevelSchemeHashTable hashTable = new TwoLevelSchemeHashTable(MAX_SIZE);
         hashTable.build(testData);
 
         for(Pair pair: testData)

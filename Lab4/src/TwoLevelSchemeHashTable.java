@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 
-public class HashTable2 {
+public class TwoLevelSchemeHashTable implements HashTable{
     //arrayList of the bins
-    private ArrayList<ArrayList<Pair>>  collisionPairs;
+    private ArrayList<ArrayList<Pair>>  bins;
     private ArrayList<Integer> collisionIndices;
-    private  HashTable[] hashTables;
+    private  MatrixMethodHashTable[] matrixMethodHashTables;
     private Object data[];
     private Matrix hashFunction;
       private int maxSize=0;
@@ -12,7 +12,7 @@ public class HashTable2 {
       private int lastPairIndexAdded=0;
     int collisions=0;
 
-    HashTable2(int maxSize){
+    TwoLevelSchemeHashTable(int maxSize){
         int closestPowerOf2 = 1;
         int maxSizeBits = 0;
         while(closestPowerOf2 < maxSize) {
@@ -23,13 +23,14 @@ public class HashTable2 {
         this.maxSize = closestPowerOf2;
         this.maxSizeBits = maxSizeBits;
         this.data = new Object[this.maxSize];
-        this.collisionPairs=new ArrayList<ArrayList<Pair>>();
+        this.bins=new ArrayList<ArrayList<Pair>>();
         for(int i=0;i<this.maxSize;i++) {
-            this.collisionPairs.add(new ArrayList<Pair>());
+            this.bins.add(new ArrayList<Pair>());
         }
-        this.hashTables=new HashTable[this.maxSize];
+        this.matrixMethodHashTables =new MatrixMethodHashTable[this.maxSize];
         this.collisionIndices=new ArrayList<>();
     }
+    @Override
     public void build(Pair[] pairs){
         firstLevel(pairs);
         secondLevel();
@@ -41,21 +42,22 @@ public class HashTable2 {
             if (isCollided(pair.key)) { // collision happened
                 int collisionIndex=getHashedIndex(pair.key);
                 this.collisionIndices.add(collisionIndex);
-                this.collisionPairs.get(collisionIndex).add(pair);
+                this.bins.get(collisionIndex).add(pair);
                 this.collisions++;
             }else {
                 insert(pair);
-                this.collisionPairs.get(this.lastPairIndexAdded).add(pair);
+                this.bins.get(this.lastPairIndexAdded).add(pair);
             }
         }
     }
     private void secondLevel(){
         //create hashmaps
         for(Integer collisionIndex:this.collisionIndices){
-            this.hashTables[collisionIndex] = new HashTable(this.collisionIndices.size());
-            this.hashTables[collisionIndex].build(collisionPairs.get(collisionIndex).toArray(new Pair[collisionPairs.get(collisionIndex).size()]));
+            this.matrixMethodHashTables[collisionIndex] = new MatrixMethodHashTable(this.collisionIndices.size());
+            this.matrixMethodHashTables[collisionIndex].build(bins.get(collisionIndex).toArray(new Pair[bins.get(collisionIndex).size()]));
         }
     }
+    @Override
     public void insert(Pair pair){
         int key = pair.key;
         Object value = pair.value;
@@ -81,29 +83,37 @@ public class HashTable2 {
         return getHashedIndex(key);
     }
     private Object lookupSecondLevel(int key,int collisionIndex){
-        return this.hashTables[collisionIndex].lookup(key);
+        return this.matrixMethodHashTables[collisionIndex].lookup(key);
     }
+    @Override
     public Object lookup(int key){
         int index =lookupFirstLevel(key);
-        if(this.collisionPairs.get(index).size()<=1) //found in first level
+        if(this.bins.get(index).size()<=1) //found in first level
             return this.data[index];
         return lookupSecondLevel(key,index);
     }
-
+    @Override
     public void clear(){
         this.data = new Object[this.maxSize];
+        this.bins=new ArrayList<ArrayList<Pair>>();
+        for(int i=0;i<this.maxSize;i++) {
+            this.bins.add(new ArrayList<Pair>());
+        }
+        this.matrixMethodHashTables =new MatrixMethodHashTable[this.maxSize];
+        this.collisionIndices=new ArrayList<>();
     }
+    @Override
     public void lookGroup(Pair[] pairs){
         for(Pair pair:pairs)
             System.out.printf("%d -> %d\n",pair.key,(Integer)lookup(pair.key));
 
     }
-
+    @Override
     public void print(){
-        for(int i=0; i<maxSize; i++){
-            if(data[i] == null)
-                continue;
-            System.out.printf("%d -> %d\n", i, (Integer)data[i]);
+        for (ArrayList<Pair> bin :this.bins) {
+            for (Pair pair : bin) {
+                System.out.printf("%d -> %d \n" ,pair.key,lookup(pair.key));
+            }
         }
     }
 
