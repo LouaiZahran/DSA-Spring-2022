@@ -19,7 +19,7 @@ public class Main {
             System.out.printf("%d -> %d\n", testData[i].key, (int)testData[i].value);   //Note the difference between key and hashed index
         }
 
-        HashTable hashTable = new HashTable(MAX_SIZE);
+        HashTable2 hashTable = new HashTable2(MAX_SIZE);
         hashTable.build(testData);
 
         for(Pair pair: testData)
@@ -29,6 +29,10 @@ public class Main {
         System.out.println("=======================");
         hashTable.print();
 
-        System.out.printf("\nNumber of rebuilds: %d", hashTable.rebuilds);
+        System.out.println("\nOutPut Pairs");
+        System.out.println("=======================");
+        hashTable.lookGroup(testData);
+
+        System.out.printf("\nNumber of collisions: %d", hashTable.collisions);
     }
 }
