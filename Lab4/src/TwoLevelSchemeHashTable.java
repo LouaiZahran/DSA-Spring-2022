@@ -30,10 +30,16 @@ public class TwoLevelSchemeHashTable implements HashTable{
         this.matrixMethodHashTables =new MatrixMethodHashTable[this.maxSize];
         this.collisionIndices=new ArrayList<>();
     }
-    @Override
-    public void build(Pair[] pairs){
-        firstLevel(pairs);
-        secondLevel();
+    private int getHashedIndex(int key){
+        Matrix keyMatrix = Matrix.convertToMatrix(key);
+        Matrix indexMatrix = hashFunction.multiply(keyMatrix);
+        return Matrix.convertToIndex(indexMatrix);
+    }
+    private boolean isCollided(int key){
+        Matrix keyMatrix = Matrix.convertToMatrix(key);
+        Matrix indexMatrix = hashFunction.multiply(keyMatrix);
+        int index = Matrix.convertToIndex(indexMatrix);
+        return this.data[index]!=null;
     }
     private void firstLevel(Pair[] pairs){
         this.hashFunction = MatrixGenerator.generate(this.maxSizeBits, 32, 1); //(b, u) = (maxSizeBits, keyBits)
@@ -54,9 +60,16 @@ public class TwoLevelSchemeHashTable implements HashTable{
         //create hashmaps
         for(Integer collisionIndex:this.collisionIndices){
             this.matrixMethodHashTables[collisionIndex] = new MatrixMethodHashTable(this.collisionIndices.size());
-            this.matrixMethodHashTables[collisionIndex].build(bins.get(collisionIndex).toArray(new Pair[bins.get(collisionIndex).size()]));
+            this.matrixMethodHashTables[collisionIndex]
+                    .build(     bins.get(collisionIndex).toArray(   new Pair[bins.get(collisionIndex).size()]   )  );
         }
     }
+    @Override
+    public void build(Pair[] pairs){
+        firstLevel(pairs);
+        secondLevel();
+    }
+
     @Override
     public void insert(Pair pair){
         int key = pair.key;
@@ -68,17 +81,7 @@ public class TwoLevelSchemeHashTable implements HashTable{
         this.lastPairIndexAdded=index;
         this.data[index] = value;
     }
-    private int getHashedIndex(int key){
-        Matrix keyMatrix = Matrix.convertToMatrix(key);
-        Matrix indexMatrix = hashFunction.multiply(keyMatrix);
-        return Matrix.convertToIndex(indexMatrix);
-    }
-    private boolean isCollided(int key){
-        Matrix keyMatrix = Matrix.convertToMatrix(key);
-        Matrix indexMatrix = hashFunction.multiply(keyMatrix);
-        int index = Matrix.convertToIndex(indexMatrix);
-        return this.data[index]!=null;
-    }
+
     private int lookupFirstLevel(int key){
         return getHashedIndex(key);
     }
