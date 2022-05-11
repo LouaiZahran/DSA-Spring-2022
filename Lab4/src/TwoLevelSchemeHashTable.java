@@ -157,4 +157,15 @@ public class TwoLevelSchemeHashTable implements HashTable{
     public boolean containsKey(int key) {
         return lookup(key)!=null;
     }
+
+    @Override
+    public boolean contains(Object obj) {
+        for (ArrayList<Pair> bin :this.bins) {
+            for (Pair pair : bin) {
+                if((int) lookup(pair.key) ==(int) obj)
+                    return true;
+            }
+        }
+        return false;
+    }
 }
