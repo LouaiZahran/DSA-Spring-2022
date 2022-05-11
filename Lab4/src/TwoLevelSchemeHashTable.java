@@ -152,4 +152,9 @@ public class TwoLevelSchemeHashTable implements HashTable{
     public int getProblemCounter() {
         return this.collisions;
     }
+
+    @Override
+    public boolean containsKey(int key) {
+        return lookup(key)!=null;
+    }
 }

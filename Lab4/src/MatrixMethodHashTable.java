@@ -75,4 +75,9 @@ public class MatrixMethodHashTable implements HashTable {
     public int getProblemCounter() {
         return this.rebuilds;
     }
+    
+    @Override
+    public boolean containsKey(int key) {
+        return lookup(key)!=null;
+    }
 }
