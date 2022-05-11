@@ -1,8 +1,15 @@
 public class Main {
     public static void main(String[] args){
-        int MAX_SIZE = 128;
+        try {
+            Thread.sleep(10000); // sleep to be able to connect jconsole to check memory usage
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int MAX_SIZE = 100_000;
+        int INPUTRANGE = 100_000_000;
         Pair[] testData = new Pair[MAX_SIZE];
-        boolean[] seen = new boolean[MAX_SIZE];
+        boolean[] seen = new boolean[INPUTRANGE];
 
         System.out.println("Inserted Pairs");
         System.out.println("=============");
@@ -11,7 +18,7 @@ public class Main {
             testData[i] = new Pair();
             //No two pairs should have the same KEY during insertion, this is different from collisions after hashing
             do {
-                testData[i].key = (int)(MAX_SIZE * Math.random());
+                testData[i].key = (int)(INPUTRANGE * Math.random());
             }while(seen[testData[i].key]);
             seen[testData[i].key] = true;
 
