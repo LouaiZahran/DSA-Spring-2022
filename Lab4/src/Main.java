@@ -6,8 +6,8 @@ public class Main {
             e.printStackTrace();
         }
 
-        int MAX_SIZE = 100_000;
-        int INPUTRANGE = 100_000_000;
+        int MAX_SIZE = 20_000;
+        int INPUTRANGE = MAX_SIZE*100;
         Pair[] testData = new Pair[MAX_SIZE];
         boolean[] seen = new boolean[INPUTRANGE];
 
