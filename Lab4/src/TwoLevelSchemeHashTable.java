@@ -5,7 +5,7 @@ public class TwoLevelSchemeHashTable implements HashTable{
     private ArrayList<ArrayList<Pair>>  bins;
     private ArrayList<Integer> collisionIndices;
     private  HashTable[] matrixMethodHashTables;
-    private Object data[];
+    private Pair data[];
     private Matrix hashFunction;
       private int maxSize=0;
       private int maxSizeBits=0;
@@ -22,7 +22,7 @@ public class TwoLevelSchemeHashTable implements HashTable{
         this.collisions = 0;
         this.maxSize = closestPowerOf2;
         this.maxSizeBits = maxSizeBits;
-        this.data = new Object[this.maxSize];
+        this.data = new Pair[this.maxSize];
         this.bins=new ArrayList<ArrayList<Pair>>();
         for(int i=0;i<this.maxSize;i++) {
             this.bins.add(new ArrayList<Pair>());
@@ -49,7 +49,10 @@ public class TwoLevelSchemeHashTable implements HashTable{
         Matrix indexMatrix = hashFunction.multiply(keyMatrix);
         int index = Matrix.convertToIndex(indexMatrix);
         this.lastPairIndexAdded=index;
-        this.data[index] = value;
+
+        this.data[index] = new Pair();
+        this.data[index].value = value;
+        this.data[index].key = key;
     }
     private void firstLevel(Pair[] pairs){
         this.hashFunction = MatrixGenerator.generate(this.maxSizeBits, 32, 1); //(b, u) = (maxSizeBits, keyBits)
@@ -115,12 +118,14 @@ public class TwoLevelSchemeHashTable implements HashTable{
     public Object lookup(int key){
         int index =lookupFirstLevel(key);
         if(this.bins.get(index).size()<=1) //found in first level
-            return this.data[index];
+        {
+            return (this.data[index]!=null && key==this.data[index].key) ? this.data[index].value :null ;
+        }
         return lookupSecondLevel(key,index);
     }
     @Override
     public void clear(){
-        this.data = new Object[this.maxSize];
+        this.data = new Pair[this.maxSize];
         this.bins=new ArrayList<ArrayList<Pair>>();
         for(int i=0;i<this.maxSize;i++) {
             this.bins.add(new ArrayList<Pair>());

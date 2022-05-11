@@ -2,7 +2,7 @@ public class MatrixMethodHashTable implements HashTable {
     private int rebuilds;
    private int maxSize;
    private int maxSizeBits;
-   private Object[] data;
+   private Pair[] data;
    private Matrix hashFunction;
 
     public MatrixMethodHashTable(int maxSize){
@@ -17,7 +17,7 @@ public class MatrixMethodHashTable implements HashTable {
         this.rebuilds = 0;
         this.maxSize = closestPowerOf2;
         this.maxSizeBits = maxSizeBits;
-        this.data = new Object[this.maxSize];
+        this.data = new Pair[this.maxSize];
     }
     @Override
     public void build(Pair[] pairs){
@@ -41,15 +41,16 @@ public class MatrixMethodHashTable implements HashTable {
         Matrix keyMatrix = Matrix.convertToMatrix(key);
         Matrix indexMatrix = hashFunction.multiply(keyMatrix);
         int index = Matrix.convertToIndex(indexMatrix);
-
-        this.data[index] = value;
+        this.data[index] = new Pair();
+        this.data[index].value = value;
+        this.data[index].key = key;
     }
     @Override
     public Object lookup(int key){
         Matrix keyMatrix = Matrix.convertToMatrix(key);
         Matrix indexMatrix = hashFunction.multiply(keyMatrix);
         int index = Matrix.convertToIndex(indexMatrix);
-        return this.data[index];
+        return (this.data[index]!=null && key==this.data[index].key) ? this.data[index].value :null ;
     }
     @Override
     public void lookGroup(Pair[] pairs){
@@ -59,14 +60,14 @@ public class MatrixMethodHashTable implements HashTable {
     }
     @Override
     public void clear(){
-        this.data = new Object[this.maxSize];
+        this.data = new Pair[this.maxSize];
     }
     @Override
     public void print(){
         for(int i=0; i<maxSize; i++){
             if(data[i] == null)
                 continue;
-            System.out.printf("%d -> %d\n", i, (Integer)data[i]);
+            System.out.printf("%d -> %d\n", i, (Integer)data[i].value);
         }
     }
 
