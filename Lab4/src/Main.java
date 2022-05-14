@@ -1,12 +1,23 @@
 public class Main {
-    public static void main(String[] args){
-        try {
-            Thread.sleep(10000); // sleep to be able to connect jconsole to check memory usage
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        int MAX_SIZE = 20_000;
+    public static void memoryStats() {
+        int mb = 1024 * 1024;
+        // get Runtime instance
+        Runtime instance = Runtime.getRuntime();
+        System.out.println("***** Heap utilization statistics [MB] *****\n");
+        // available memory
+        System.out.println("Total Memory: " + instance.totalMemory() / mb);
+        // free memory
+        System.out.println("Free Memory: " + instance.freeMemory() / mb);
+        // used memory
+        System.out.println("Used Memory: "
+                + (instance.totalMemory() - instance.freeMemory()) / mb);
+        // Maximum available memory
+        System.out.println("Max Memory: " + instance.maxMemory() / mb);
+    }
+    public static void main(String[] args){
+
+        int MAX_SIZE = 10000;
         int INPUTRANGE = MAX_SIZE*100;
         Pair[] testData = new Pair[MAX_SIZE];
         boolean[] seen = new boolean[INPUTRANGE];
@@ -40,6 +51,7 @@ public class Main {
         System.out.println("=======================");
         hashTable.lookGroup(testData);
 
-        System.out.printf("\nNumber of Problems ( collision or rebuilds): %d", hashTable.getProblemCounter());
+        System.out.printf("\nNumber of Problems ( collision or rebuilds): %d \n", hashTable.getProblemCounter());
+        memoryStats();
     }
 }
