@@ -32,5 +32,5 @@ public interface IBTree<K extends Comparable<K>, V> {
 	 * @return true if the key is found and the node is successfully deleted, false otherwise
 	 */
 	boolean delete(K key);
-	
+
 }
