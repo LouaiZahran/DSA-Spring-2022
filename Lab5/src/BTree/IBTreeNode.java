@@ -16,7 +16,7 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	void setNumOfKeys(int numOfKeys);
 
 	/**
-	 * @return isLeaf if the node is leaf or not.
+	 * @return if the node is leaf or not.
 	 */
 	boolean isLeaf();
 

@@ -19,7 +19,10 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     private List<K> keys;
     private List<V> values;
     private List<IBTreeNode<K,V>> children;
-
+    // public BTreeNode(int numOfKeys,boolean leaf){
+    //     setNumOfKeys(numOfKeys);
+    //     setLeaf(leaf);
+    // }
     public BTreeNode(int numOfKeys, boolean leaf, List<K> keys, List<V> values, List<IBTreeNode<K, V>> childChildren){
         setNumOfKeys(numOfKeys);
         setLeaf(leaf);
@@ -31,14 +34,22 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     public boolean isfull(){
         return this.keys.size() == this.numOfKeys;
     }
+
+    static private<l> ArrayList<l> subList(List<l> a,int from,int to){
+        var returned = new ArrayList<l>();
+        for(int i = from;i<to;i++){
+            returned.add(a.get(i));
+        }
+        return returned;
+    }
     @Override
     public K split(IBTreeNode parent,int splittedIndex){
         int med = (this.keys.size()-1)/2;
-        BTreeNode<K,V> LeftChild = new BTreeNode<K,V>(numOfKeys, leaf, keys.subList(0, med), values.subList(0, med), children.subList(0,med+1));
+        BTreeNode<K,V> LeftChild = new BTreeNode<K,V>(numOfKeys, leaf, subList(keys,0, med), subList(values,0, med), subList(children,0,med+1));
         parent.getChildren().set(splittedIndex, LeftChild);
         parent.getKeys().add(splittedIndex, this.keys.get(med));
         parent.getValues().add(splittedIndex, this.values.get(med));
-        BTreeNode<K,V> RightChild = new BTreeNode<K,V>(numOfKeys, leaf, keys.subList(med+1,keys.size()), values.subList(med+1,values.size()), children.subList(med+1,children.size()));
+        BTreeNode<K,V> RightChild = new BTreeNode<K,V>(numOfKeys, leaf, subList(keys,med+1,keys.size()), subList(values,med+1,values.size()), subList(children,med+1,children.size()));
         parent.getChildren().add(splittedIndex+1, RightChild);
         return keys.get(med);
     }
@@ -101,7 +112,12 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         }
         System.out.println();
         for (IBTreeNode<K,V> ibTreeNode : children) {
-            ibTreeNode.print();
+            if(ibTreeNode!=null){
+                ibTreeNode.print();
+            }
+            else{
+                System.out.println("null");
+            }
         }
     }
 }
