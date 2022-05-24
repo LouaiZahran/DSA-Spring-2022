@@ -34,10 +34,9 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }
         while(!current.isLeaf()){
             int key_index=-1;
-            boolean found = false;
-            while(key_index+2<current.getNumOfKeys() && (found = key.compareTo((K) (current.getKeys().get(key_index+1)))>=0)){
+            while(key_index+2<current.getKeys().size() && (key.compareTo((K) (current.getKeys().get(key_index+1)))>=0)){
                 key_index++;
-                if(found){
+                if(key.compareTo((K) (current.getKeys().get(key_index)))==0){
                     current.getValues().set(key_index,value);
                     return;
                     // throw new RuntimeException("Key already exists");
@@ -46,7 +45,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             if(key_index<0){
                 key_index=0;
             }
-            System.out.println(current.getKeys().size());
             next = ((IBTreeNode)(current.getChildren().get(key_index)));
             if(next == null){
                 current.setLeaf(false);
@@ -78,13 +76,12 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }
         if(current.getKeys().size()==i){
             if(!current.isfull()){
-                current.getKeys().add(i,key);
-                current.getValues().add(i,value);
+                current.getKeys().add(key);
+                current.getValues().add(value);
                 return;
             }
             else{
                 BTreeNode newChild = new BTreeNode<K,V>(2*minimumDegree-1,true,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K,V>>());
-
                 newChild.getKeys().add(key);
                 newChild.getValues().add(value);
                 current.getChildren().set(i,newChild);
@@ -92,10 +89,11 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
                 return;
             }
         }
-        if (key.compareTo((K)current.getKeys().get(i))!=0){
+        else if (key.compareTo((K)current.getKeys().get(i))!=0){
             if(!current.isfull()){
                 current.getKeys().add(i,key);
                 current.getValues().add(i,value);
+                return;
             }
             else{
                 BTreeNode newChild = new BTreeNode<K,V>(2*minimumDegree-1,true,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K,V>>());

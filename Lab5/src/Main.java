@@ -24,6 +24,7 @@ public class Main {
             e.printStackTrace();
         }
         engine.indexWebPage("Wikipedia Data Sample/wiki_00");
+        engine.print();
         List<ISearchResult> results = engine.searchByWordWithRanking("Beach");
         for(ISearchResult result: results)
             System.out.println(result.getId() + " " + result.getRank());
