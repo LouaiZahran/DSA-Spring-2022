@@ -36,7 +36,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             return;
         }
         while(!current.isLeaf()){
-            System.out.println("hi");
             int key_index=-1;
             boolean found = false;
             while(key_index+2<current.getNumOfKeys() && (found = key.compareTo((K) (current.getKeys().get(key_index+1)))<=0)){
@@ -58,7 +57,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
                 next = ((IBTreeNode)(current.getChildren().get(key_index)));
             }
             if(!next.isfull()){
-                System.out.println("hi");
                 current = next;
             }
             else{
@@ -76,16 +74,17 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
                 }
             }
         }
-        if(current.getKeys().size()==0){
+
+        int i = 0;
+        while(i<current.getKeys().size()&&key.compareTo((K)current.getKeys().get(i))>0){
+            i++;
+        }
+        if(current.getKeys().size()==i){
             current.getKeys().add(key);
             current.getChildren().add(null);
             current.getChildren().add(null);
             current.getValues().add(value);
             return;
-        }
-        int i = 0;
-        while(i<current.getKeys().size()&&key.compareTo((K)current.getKeys().get(i))<0){
-            i++;
         }
         if (key.compareTo((K)current.getKeys().get(i))!=0){
             if(!current.isfull()){
