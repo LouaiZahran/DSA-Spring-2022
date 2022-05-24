@@ -29,10 +29,15 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         setKeys(keys);
         setValues(values);
         setChildren(childChildren);
+        if(childChildren!=null || childChildren.get(0)!=null){
+            for(int i=0;i<numOfKeys+1;i++){
+                this.children.add(null);
+            }
+        }
     }
     @Override
     public boolean isfull(){
-        return this.keys.size() == this.numOfKeys;
+        return this.keys.size() == this.numOfKeys+1;
     }
 
     static private<l> ArrayList<l> subList(List<l> a,int from,int to){

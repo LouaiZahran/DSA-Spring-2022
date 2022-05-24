@@ -7,7 +7,7 @@ public interface ISearchEngine {
 	/**
 	 * Given a file path that contains one or more Wikipedia 
 	 * documents in the same XML format of the provided sample data, 
-	 * you are required to index these documents content to be able to 
+	 * you are required to index these documents content to be able to w
 	 * search through them later.
 	 * @param filePath the path to the file to be indexed
 	 */

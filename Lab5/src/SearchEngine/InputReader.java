@@ -49,7 +49,7 @@ public class InputReader {
                     //System.out.println("Title: " + title);
                     //System.out.println("Content: " + content);
 
-                    docs.add(new Doc(id, url, title, content.split("\s+|\n+")));
+                    docs.add(new Doc(id, url, title, content.split("[\r\n\t\f]+|\n+")));
                 }
             }
 
