@@ -16,6 +16,11 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	void setNumOfKeys(int numOfKeys);
 
 	/**
+	 * @return return min number of keys in this node.
+	 */
+	int getMinNumOfKeys();
+
+	/**
 	 * @return if the node is leaf or not.
 	 */
 	boolean isLeaf();
@@ -67,6 +72,18 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	 * @return the middle key where the split has happened
 	 */
 	public K split(IBTreeNode<K,V> parent,int splittedIndex);
+
+	/**
+	 *
+	 * @param k key
+	 * @return index of key in keys if not found then return -1
+	 */
+	int indexOfKey(Comparable k);
+
+	/**
+	 * return parent node
+	 */
+	BTreeNode getParent();
 
 	void print();
 

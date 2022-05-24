@@ -150,7 +150,100 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
 
     @Override
     public boolean delete(Comparable key) {
+        delete(root,key);
         return false;
+    }
+    private void borrowFromLeftSibling(IBTreeNode parent,IBTreeNode node,IBTreeNode leftSibling, Comparable oldParentKey, Comparable newParentKey ,){
+
+        int oldParentIndex=parent.indexOfKey(oldParentKey);//get index in parent key to be demoted
+        node.getKeys().add(0,oldParentKey); //add from left
+        parent.getKeys().remove(oldParentKey);  //remove old parent
+        parent.getKeys().add(parent.getKeys().size()-1,newParentKey); //add new parent
+        leftSibling.getKeys().remove(newParentKey);     //remove new parent from his old node
+    }
+    private boolean delete(IBTreeNode node, Comparable key){
+        if(node ==null)
+            return false;
+        int index=node.indexOfKey(key);
+        if(index != -1)//found in this node
+        {
+            if(node.isLeaf()){
+                if(node.getKeys().size()>node.getMinNumOfKeys()){//node leaf and has more than min keys
+                   node.getKeys().remove(key);
+                   return true;
+                }
+                else{ // borrow from right sibling or left sibling or merge
+                    //less than smallest key in parent then has no left sibling
+                    IBTreeNode parent=node.getParent();
+                    if(key.compareTo(parent.getKeys().get(0))<0){
+
+                        IBTreeNode rightSibling=(IBTreeNode)(parent.getChildren().get(1));
+                        Comparable oldParentKey= (Comparable) parent.getKeys().get(0);
+                        Comparable newParentKey = (Comparable) rightSibling.getKeys().get(0);
+
+
+                        int oldParentIndex = parent.indexOfKey(oldParentKey); // get index in parent key to be demoted
+                        node.getKeys().add(node.getKeys().size()-1,oldParentKey);  // add from right
+                        parent.getKeys().remove(oldParentKey); //remove old parent
+                        parent.getKeys().add(0,newParentKey);//add new parent
+                        rightSibling.getKeys().remove(oldParentKey); //remove new parent from his old node
+                        node.getKeys().remove(key); //remove the desired node
+                        return true;
+                    }
+                    //more than greatest key in parent then has no right sibling
+                    else if(key.compareTo(parent.getKeys().get(parent.getKeys().size()-1))>0){
+                        IBTreeNode leftSibling=(IBTreeNode)(parent.getChildren().get(parent.getKeys().size()-1));
+                        Comparable oldParentKey= (Comparable) parent.getKeys().get(parent.getKeys().size()-1);
+                        Comparable newParentKey = (Comparable) leftSibling.getKeys().get(leftSibling.getKeys().size()-1);
+
+                        int oldParentIndex=parent.indexOfKey(oldParentKey);//get index in parent key to be demoted
+                        node.getKeys().add(0,oldParentKey); //add from left
+                        parent.getKeys().remove(oldParentKey);  //remove old parent
+                        parent.getKeys().add(parent.getKeys().size()-1,newParentKey); //add new parent
+                        leftSibling.getKeys().remove(newParentKey);     //remove new parent from his old node
+                        node.getKeys().remove(key); // remove the desired node
+                        return true;
+
+                    }//has left and right siblings
+                    else{
+                        int indexInParent=0;
+                        for(;indexInParent<parent.getKeys().size();indexInParent++){
+                            if(key.compareTo(parent.getKeys().get(indexInParent)) > 0
+                            &&  key.compareTo(parent.getKeys().get(indexInParent+1)) < 0 ){
+                                break;
+                            }
+                        }
+                        IBTreeNode leftSibling=(IBTreeNode)(parent.getChildren().get(indexInParent));
+                        IBTreeNode rightSibling=(IBTreeNode)(parent.getChildren().get(indexInParent+1));
+                        //left sibling
+                        if(leftSibling.getKeys().size()<node.getMinNumOfKeys())
+                        {
+                            Comparable oldParentKey= (Comparable) parent.getKeys().get(indexInParent);
+                            Comparable  newParentKey = (Comparable) leftSibling.getKeys().get(leftSibling.getKeys().size()-1);
+                            
+                            int oldParentIndex=parent.indexOfKey(oldParentKey);//get index in parent key to be demoted
+                            node.getKeys().add(0,oldParentKey); //add from left
+                            parent.getKeys().remove(oldParentKey);  //remove old parent
+                            parent.getKeys().add(indexInParent,newParentKey); //add new parent
+                            leftSibling.getKeys().remove(newParentKey);     //remove new parent from his old node
+                            node.getKeys().remove(key); // remove the desired node
+                            return  true;
+                        }//right sibling
+                        else if(rightSibling.getKeys().size()<node.getMinNumOfKeys()){
+                            Comparable oldParentKey = (Comparable) parent.getKeys().get(indexInParent+1);
+                            Comparable newParentKey = (Comparable) rightSibling.getKeys().get(0);
+                            int oldParentIndex = parent.indexOfKey(oldParentKey); // get index in parent key to be demoted
+                            node.getKeys().add(node.getKeys().size()-1,oldParentKey);  // add from right
+                            parent.getKeys().remove(oldParentKey); //remove old parent
+                            parent.getKeys().add(indexInParent,newParentKey);//add new parent
+                            rightSibling.getKeys().remove(oldParentKey); //remove new parent from his old node
+                            node.getKeys().remove(key); //remove the desired node
+                            return  true;
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
