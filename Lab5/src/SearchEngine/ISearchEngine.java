@@ -51,5 +51,6 @@ public interface ISearchEngine {
 	 * @return a list of search results containing IDs and ranks of documents in which words are found
 	 */
 	List<ISearchResult> searchByMultipleWordWithRanking(String sentence);
-	
+
+    void print();
 }

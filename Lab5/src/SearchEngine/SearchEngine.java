@@ -100,4 +100,11 @@ public class SearchEngine implements ISearchEngine{
         }
         return list;
     }
+    @Override
+    public void print(){
+        engine.getRoot().print();
+        insertedDocuments.forEach((string)->{
+            System.out.println(string);
+        });
+    }
 }

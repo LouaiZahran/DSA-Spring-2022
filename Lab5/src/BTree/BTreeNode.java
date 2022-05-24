@@ -57,7 +57,7 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
 
     @Override
     public boolean isfull(){
-        return this.keys.size() == this.numOfKeys+1;
+        return this.keys.size() == this.numOfKeys;
     }
 
     static private<l> ArrayList<l> subList(List<l> a,int from,int to){
@@ -131,7 +131,7 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     public void print(){
         int i = 0;
         for (Comparable key : keys) {
-            System.out.print(key+" -> "+values.get(i));
+            System.out.print(key+"");
             System.out.print(" | ");
             i++;
         }
@@ -139,9 +139,6 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         for (IBTreeNode<K,V> ibTreeNode : children) {
             if(ibTreeNode!=null){
                 ibTreeNode.print();
-            }
-            else{
-                System.out.println("null");
             }
         }
     }
