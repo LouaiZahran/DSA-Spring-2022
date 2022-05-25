@@ -72,7 +72,7 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	 * @return the new root if the root has split or null
 	 */
 	IBTreeNode<K,V> split (Stack<Integer> history);
-	void print(Integer count);
+	void print();
 	/**
 	 *
 	 * @param k key
