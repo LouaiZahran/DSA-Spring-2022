@@ -68,8 +68,10 @@ public class SearchEngine implements ISearchEngine{
             return;
         }
 
-        for(Doc doc: docs)
+        for(Doc doc: docs) {
             engine.delete(doc.getId());
+            insertedDocuments.remove(doc.getId());
+        }
     }
 
     @Override
