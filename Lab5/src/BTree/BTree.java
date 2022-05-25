@@ -242,7 +242,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
                 }
                 key_index++;
             }
-            current =  (current.getChildren().get(key_index));
+            current =  ((IBTreeNode) (current.getChildren().get(key_index)));
         }
         return null;
 
