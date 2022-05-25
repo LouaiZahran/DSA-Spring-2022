@@ -226,6 +226,9 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
                 }
                 key_index++;
             }
+            if(key_index>=current.getChildren().size()){
+                return null;
+            }
             current = ((IBTreeNode) (current.getChildren().get(key_index)));
         }
         return null;
@@ -370,9 +373,9 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     private IBTreeNode getPredecssorHelper(IBTreeNode node){
         //traverse most right
         if(node.isLeaf()){
-            return (IBTreeNode) node.getKeys().get(node.getKeys().size()-1);
+            return (IBTreeNode) node.getChildren().get(node.getChildren().size()-1);
         }else{
-            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(node.getKeys().size())));
+            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(node.getChildren().size())));
         }
     }
     private IBTreeNode getPredecessor(IBTreeNode node,int nodeIndex){

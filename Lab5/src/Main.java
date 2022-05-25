@@ -14,7 +14,7 @@ public class Main {
     public static void main(String args[]) {
         BTree<Integer, Integer> t = new BTree(2);
         HashMap<Integer, Integer> input = new HashMap<>();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100; i++) {
             Integer k = (int) (Math.random() * 90000);
             Integer v = (int) (Math.random() * 90000);
             input.put(k,v);
@@ -22,7 +22,7 @@ public class Main {
         }
         BiConsumer<Integer, Integer> fun = (x, y) -> {
             var found = t.search(x);
-//          System.out.println("->"+ x + " : found: "+ found +" expected: "+y );
+            System.out.println("->"+ x + " : found: "+ found +" expected: "+y );
             if(!found.equals(y)){
                 throw new RuntimeException("INCORRECT");
             };
