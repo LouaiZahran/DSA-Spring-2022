@@ -14,19 +14,22 @@ public class Main {
     public static void main(String args[]) {
         BTree<Integer, Integer> t = new BTree(2);
         HashMap<Integer, Integer> input = new HashMap<>();
-        for (int i = 0; i < 10000; i++) {
-            Integer k = (int) (Math.random() * 10000);
-            Integer v = (int) (Math.random() * 10000);
+        for (int i = 0; i < 1000000; i++) {
+            Integer k = (int) (Math.random() * 90000);
+            Integer v = (int) (Math.random() * 90000);
+            input.put(k,v);
             t.insert(k, v);
         }
         BiConsumer<Integer, Integer> fun = (x, y) -> {
-            if( !t.search(x).equals(y)){
+            var found = t.search(x);
+            System.out.println("->"+ x + " : found: "+ found +" expected: "+y );
+            if(!found.equals(y)){
                 throw new RuntimeException("INCORRECT");
             };
         };
         input.forEach(fun);
-        t.getRoot().print();
-//
+//        t.getRoot().print();
+
 //        ISearchEngine engine = new SearchEngine();
 //        List<Doc> docs;
 //        try {
