@@ -74,7 +74,7 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
 
     @Override
     public boolean isLeaf() {
-        return this.leaf;
+        return this.getChildren().size()==0;
     }
 
     @Override
