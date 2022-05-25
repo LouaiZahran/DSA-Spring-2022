@@ -112,18 +112,17 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         this.children = children;
     }
     @Override
-    public void print(Integer count){
+    public void print(){
         int i=0;
         for (Comparable key : keys) {
             System.out.print(key+":"+values.get(i));
             System.out.print(" | ");
-            count = new Integer(count+1);
             i++;
         }
         System.out.println();
         for (IBTreeNode<K,V> ibTreeNode : children) {
             if(ibTreeNode!=null){
-                ibTreeNode.print(count);
+                ibTreeNode.print();
             }
         }
     }

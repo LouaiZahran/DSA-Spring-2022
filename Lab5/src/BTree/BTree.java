@@ -239,7 +239,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         return false;
     }
     private void borrowFromLeftSibling(IBTreeNode parent,IBTreeNode node,IBTreeNode leftSibling, Comparable oldParentKey, Comparable newParentKey ){
-
         int oldParentIndex=parent.indexOfKey(oldParentKey);//get index in parent key to be demoted
         node.getKeys().add(0,oldParentKey); //add from left
         parent.getKeys().remove(oldParentIndex);  //remove old parent
