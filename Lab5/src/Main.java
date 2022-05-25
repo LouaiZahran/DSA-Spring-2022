@@ -19,6 +19,8 @@ public class Main {
             Integer v = (int) (Math.random() * 90000);
             input.put(k,v);
             t.insert(k, v);
+            System.out.println(t.delete(k));
+            System.out.println(t.delete(k));
         }
         BiConsumer<Integer, Integer> fun = (x, y) -> {
             var found = t.search(x);
