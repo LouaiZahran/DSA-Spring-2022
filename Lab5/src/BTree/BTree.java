@@ -257,7 +257,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         node.getKeys().add(parent);
         node.getKeys().addAll(rightSibling.getKeys());
         if(parent.getParent()!=null)
-             delete(parent,(Comparable) parent.getKeys().get(indexInParent));//remove parent
+            delete(parent,(Comparable) parent.getKeys().get(indexInParent));//remove parent
         else{
             parent.getKeys().remove(indexInParent);//root
             if(parent.getKeys().size()==0)
