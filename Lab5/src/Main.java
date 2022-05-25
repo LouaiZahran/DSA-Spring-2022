@@ -18,8 +18,6 @@ public class Main {
             Integer k = (int) (Math.random() * 10000);
             Integer v = (int) (Math.random() * 10000);
             t.insert(k, v);
-            System.out.println(t.delete(k));
-            System.out.println(t.delete(k));
         }
         BiConsumer<Integer, Integer> fun = (x, y) -> {
             if( !t.search(x).equals(y)){
