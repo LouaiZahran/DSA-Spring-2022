@@ -101,8 +101,8 @@ public class SearchEngine implements ISearchEngine{
         return list;
     }
     @Override
-    public void print(){
-        engine.getRoot().print();
+    public void print(int count){
+        engine.getRoot().print(count);
         insertedDocuments.forEach((string)->{
             System.out.println(string);
         });

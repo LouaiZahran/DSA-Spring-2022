@@ -1,8 +1,8 @@
 package BTree;
 
-import java.security.AllPermission;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /*
 a node with 2 keys b & c along with their values:
@@ -14,6 +14,7 @@ a node with 2 keys b & c along with their values:
 */
 public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
 
+    private IBTreeNode parent;
     private int numOfKeys;  //max no of keys ?
     private boolean leaf;
     private List<K> keys;
@@ -23,7 +24,7 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     //     setNumOfKeys(numOfKeys);
     //     setLeaf(leaf);
     // }
-    public BTreeNode(int numOfKeys, boolean leaf, List<K> keys, List<V> values, List<IBTreeNode<K, V>> childChildren){
+    public BTreeNode(int numOfKeys, boolean leaf, List<K> keys, List<V> values, List<IBTreeNode<K, V>> childChildren,IBTreeNode Parent){
         setNumOfKeys(numOfKeys);
         setLeaf(leaf);
         setKeys(keys);
@@ -34,30 +35,14 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
                 this.children.add(null);
             }
         }
+        this.parent = Parent;
     }
     @Override
     public boolean isfull(){
         return this.keys.size() == this.numOfKeys;
     }
 
-    static private<l> ArrayList<l> subList(List<l> a,int from,int to){
-        var returned = new ArrayList<l>();
-        for(int i = from;i<to;i++){
-            returned.add(a.get(i));
-        }
-        return returned;
-    }
-    @Override
-    public K split(IBTreeNode parent,int splittedIndex){
-        int med = (this.keys.size()-1)/2;
-        BTreeNode<K,V> LeftChild = new BTreeNode<K,V>(numOfKeys, leaf, subList(keys,0, med), subList(values,0, med), subList(children,0,med+1));
-        parent.getChildren().set(splittedIndex, LeftChild);
-        parent.getKeys().add(splittedIndex, this.keys.get(med));
-        parent.getValues().add(splittedIndex, this.values.get(med));
-        BTreeNode<K,V> RightChild = new BTreeNode<K,V>(numOfKeys, leaf, subList(keys,med+1,keys.size()), subList(values,med+1,values.size()), subList(children,med+1,children.size()));
-        parent.getChildren().add(splittedIndex+1, RightChild);
-        return keys.get(med);
-    }
+
     @Override
     public int getNumOfKeys() {
         return this.numOfKeys;
@@ -108,18 +93,78 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         this.children = children;
     }
     @Override
-    public void print(){
-        int i = 0;
+    public void print(Integer count){
+int             i=0;
+
         for (Comparable key : keys) {
-            System.out.print(key+"");
+            System.out.print(key+":"+values.get(i));
             System.out.print(" | ");
+            count = new Integer(count+1);
             i++;
         }
         System.out.println();
         for (IBTreeNode<K,V> ibTreeNode : children) {
             if(ibTreeNode!=null){
-                ibTreeNode.print();
+                ibTreeNode.print(count);
             }
+        }
+    }
+
+    public IBTreeNode getParent() {
+        return parent;
+    }
+
+    @Override
+    public void setParent(IBTreeNode parent) {
+        this.parent = parent;
+    }
+    static private<l> ArrayList<l> subList(List<l> a, int from, int to){
+        var returned = new ArrayList<l>();
+        for(int i = from;i<to;i++){
+            returned.add(a.get(i));
+        }
+        return returned;
+    }
+    @Override
+    public IBTreeNode<K,V> split(Stack history){
+        int med = (this.keys.size()-1)/2;
+        K key = this.keys.get(med);
+        V val = this.values.get(med);
+        IBTreeNode<K,V> newParent =  this.getParent()==null ? new BTreeNode<K,V>(numOfKeys,false,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K, V>>(),null):this.parent;
+        IBTreeNode<K,V> LeftChild =  new BTreeNode<K,V>(numOfKeys, leaf, subList(keys,0, med), subList(values,0, med), subList(children,0,med+1),newParent);
+        IBTreeNode<K,V> RightChild = new BTreeNode<K,V>(numOfKeys, leaf, subList(keys,med+1,keys.size()), subList(values,med+1,values.size()), subList(children,med+1,children.size()),newParent);
+        LeftChild.getChildren().forEach((child)->{if(child!=null){child.setParent(LeftChild);}});
+        RightChild.getChildren().forEach((child)->{if(child!=null){child.setParent(RightChild);}});
+
+        if(parent==null){
+            newParent.getChildren().set(0,LeftChild);
+            newParent.getChildren().set(1,RightChild);
+            newParent.getKeys().add(key);
+            newParent.getValues().add(val);
+            return newParent;
+        }
+        int mergeindex = (int) history.pop();
+        if(!parent.isfull()){
+            parent.getChildren().add(mergeindex, LeftChild);
+            parent.getKeys().add(mergeindex, key);
+            parent.getValues().add(mergeindex, val);
+            parent.getChildren().add(mergeindex+1, RightChild);
+            parent.getChildren().remove(parent.getChildren().size()-1);
+            parent.getChildren().remove(parent.getChildren().size()-1);
+            return null;
+        }
+        else{
+            IBTreeNode possiblyNewRoot = parent.split(history);
+            if(mergeindex > parent.getKeys().size()){
+                mergeindex -= parent.getKeys().size()+1;
+            }
+            parent.getChildren().add(mergeindex, LeftChild);
+            parent.getKeys().add(mergeindex, key);
+            parent.getValues().add(mergeindex, val);
+            parent.getChildren().add(mergeindex+1, RightChild);
+            parent.getChildren().remove(parent.getChildren().size()-1);
+            parent.getChildren().remove(parent.getChildren().size()-1);
+            return possiblyNewRoot;
         }
     }
 }

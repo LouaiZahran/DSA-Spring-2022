@@ -1,6 +1,7 @@
 package BTree;
 
 import java.util.List;
+import java.util.Stack;
 
 
 public interface IBTreeNode<K extends Comparable<K>, V> {
@@ -11,7 +12,7 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	int getNumOfKeys();
 
 	/**
-	 * @param numOfKeys number of keys in this node
+	 * @param numOfKeys maximum number of keys this node can hold
 	 */
 	void setNumOfKeys(int numOfKeys);
 
@@ -59,16 +60,16 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	 * @return true if the node is full, false otherwise.
 	 */
 	public boolean isfull();
+	public IBTreeNode getParent();
 
 	/**
-	 *
-	 * @param parent the node that will hold the split result
-	 * @param splittedIndex	at what index to add the split result
-	 * @return the middle key where the split has happened
+	 * @param history a record of tree-insertion indices
+	 * @return the new root if the root has split or null
 	 */
-	public K split(IBTreeNode<K,V> parent,int splittedIndex);
+	IBTreeNode<K,V> split (Stack<Integer> history);
 
-	void print();
+	void print(Integer count);
 
 
+	void setParent(IBTreeNode<K, V> parent);
 }

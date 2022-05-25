@@ -52,5 +52,5 @@ public interface ISearchEngine {
 	 */
 	List<ISearchResult> searchByMultipleWordWithRanking(String sentence);
 
-    void print();
+    void print(int count);
 }
