@@ -398,7 +398,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     private boolean delete(IBTreeNode node, Comparable key){
         if(node ==null)
             return false;
-        if(node.isLeaf() && node.getParent() == null) //root
+        if(node.isLeaf() && node == this.root) //root
             return node.getKeys().remove(key);
         if(node.isLeaf()){
             return deleteLeaf(node,key);
