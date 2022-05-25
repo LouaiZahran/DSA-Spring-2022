@@ -232,11 +232,12 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }
         return null;
     }
-
     @Override
     public boolean delete(Comparable key) {
-        delete(root,key);
-        return false;
+        IBTreeNode node =(IBTreeNode) search(key);
+        if(node==null)
+            return false;
+        return delete(node,key);
     }
     private void borrowFromLeftSibling(IBTreeNode parent,IBTreeNode node,IBTreeNode leftSibling, Comparable oldParentKey, Comparable newParentKey ){
 
@@ -258,87 +259,129 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         node.getKeys().add(parent);
         node.getKeys().addAll(rightSibling.getKeys());
 
-        parent.getKeys().remove(indexInParent); //remove parent
+        delete(parent,(Comparable) parent.getKeys().get(indexInParent));//remove parent
         parent.getChildren().remove(indexInParent+1); //remove right sibling
         parent.getChildren().remove(indexInParent); //remove node from children
 
-        parent.getChildren().add(indexInParent,node);  //add new node
+        parent.getChildren().add(indexInParent, node);  //add new node
     }
     private boolean deleteLeaf(IBTreeNode node,Comparable key){
+        boolean isDeleteed=false;
 
-        if(node.getKeys().size()>node.getMinNumOfKeys()){//node leaf and has more than min keys
-            node.getKeys().remove(key);
-            return true;
+        if(node.getKeys().size()> node.getMinNumOfKeys()){//node leaf and has more than min keys
+            isDeleteed |=node.getKeys().remove(key);
         }
         else{ // borrow from right sibling or left sibling or merge
-                //less than smallest key in parent then has no left sibling
-                IBTreeNode parent=node.getParent();
-                int indexInParent=0;
-                boolean canBorrowFromRightSibling=true;
-                boolean canBorrowFromLeftSibling=true;
-                for(;indexInParent<parent.getKeys().size();indexInParent++){
-                    if(key.compareTo(parent.getKeys().get(indexInParent)) > 0
-                            &&  key.compareTo(parent.getKeys().get(indexInParent+1)) < 0 ){
-                        break;
-                    }
-                    if(key.compareTo(parent.getKeys().get(0))<0) //its is the most left node
-                    {
-                        canBorrowFromLeftSibling=false;
-                        break;
-                    }
-                    if(key.compareTo(parent.getKeys().get(parent.getKeys().size()-1))>0) {//its the most right node
-                        canBorrowFromRightSibling=false;
-                        break;
-                    }
+            //less than smallest key in parent then has no left sibling
+            IBTreeNode parent= node.getParent();
+            int indexInParent=0;
+            boolean canBorrowFromRightSibling=true;
+            boolean canBorrowFromLeftSibling=true;
+            for(;indexInParent<parent.getKeys().size();indexInParent++){
+                if(key.compareTo(parent.getKeys().get(indexInParent)) > 0
+                        &&  key.compareTo(parent.getKeys().get(indexInParent+1)) < 0 ){
+                    break;
                 }
-                boolean hasLeftSibling = canBorrowFromLeftSibling & indexInParent >=0 & indexInParent <parent.getKeys().size();
-                boolean hasRightSibling = canBorrowFromRightSibling & indexInParent >0 & indexInParent <=parent.getKeys().size();
-
-                IBTreeNode leftSibling=hasLeftSibling?(IBTreeNode)(parent.getChildren().get(indexInParent)) :null;
-                IBTreeNode rightSibling=hasRightSibling?(IBTreeNode)(parent.getChildren().get(indexInParent+2)):null;
-
-                canBorrowFromRightSibling &= hasRightSibling && rightSibling.getKeys().size() > rightSibling.getMinNumOfKeys();
-                canBorrowFromLeftSibling  &= hasLeftSibling && leftSibling.getKeys().size() > leftSibling.getMinNumOfKeys();
-
-                if(canBorrowFromLeftSibling){
-                    Comparable oldParentKey= (Comparable) parent.getKeys().get(indexInParent);
-                    Comparable  newParentKey = (Comparable) leftSibling.getKeys().get(leftSibling.getKeys().size()-1);
-
-                    borrowFromLeftSibling(parent,node,leftSibling,oldParentKey,newParentKey);
-                    node.getKeys().remove(key); // remove the desired node
-                    return  true;
-                }else if(canBorrowFromRightSibling){
-                    Comparable oldParentKey = (Comparable) parent.getKeys().get(indexInParent+1);
-                    Comparable newParentKey = (Comparable) rightSibling.getKeys().get(0);
-
-                    borrowFromRightSibling(parent,node,rightSibling,oldParentKey,newParentKey);
-                    node.getKeys().remove(key); //remove the desired node
-                    return  true;
+                if(key.compareTo(parent.getKeys().get(0))<0) //its is the most left node
+                {
+                    canBorrowFromLeftSibling=false;
+                    break;
                 }
-                else if(hasLeftSibling) {
-                    node.getKeys().remove(key);
-                    mergeSiblings(leftSibling,parent, node,key,indexInParent);
-                } else if (hasRightSibling) {
-                    node.getKeys().remove(key);
-                    mergeSiblings(node,parent,rightSibling,key,indexInParent);
+                if(key.compareTo(parent.getKeys().get(parent.getKeys().size()-1))>0) {//its the most right node
+                    canBorrowFromRightSibling=false;
+                    break;
                 }
+            }
+            boolean hasLeftSibling = canBorrowFromLeftSibling & indexInParent >=0 & indexInParent <parent.getKeys().size();
+            boolean hasRightSibling = canBorrowFromRightSibling & indexInParent >0 & indexInParent <=parent.getKeys().size();
+
+            IBTreeNode leftSibling=hasLeftSibling?(IBTreeNode)(parent.getChildren().get(indexInParent)) :null;
+            IBTreeNode rightSibling=hasRightSibling?(IBTreeNode)(parent.getChildren().get(indexInParent+2)):null;
+
+            canBorrowFromRightSibling &= hasRightSibling && rightSibling.getKeys().size() > rightSibling.getMinNumOfKeys();
+            canBorrowFromLeftSibling  &= hasLeftSibling && leftSibling.getKeys().size() > leftSibling.getMinNumOfKeys();
+
+            if(canBorrowFromLeftSibling){
+                Comparable oldParentKey= (Comparable) parent.getKeys().get(indexInParent);
+                Comparable  newParentKey = (Comparable) leftSibling.getKeys().get(leftSibling.getKeys().size()-1);
+
+                borrowFromLeftSibling(parent, node,leftSibling,oldParentKey,newParentKey);
+                isDeleteed |=node.getKeys().remove(key); // remove the desired node
+            }else if(canBorrowFromRightSibling){
+                Comparable oldParentKey = (Comparable) parent.getKeys().get(indexInParent+1);
+                Comparable newParentKey = (Comparable) rightSibling.getKeys().get(0);
+
+                borrowFromRightSibling(parent, node,rightSibling,oldParentKey,newParentKey);
+                isDeleteed |= node.getKeys().remove(key); //remove the desired node
+            }
+            else if(hasLeftSibling) {
+                isDeleteed |= node.getKeys().remove(key);
+                mergeSiblings(leftSibling,parent, node,key,indexInParent);
+            } else if (hasRightSibling) {
+                isDeleteed |=  node.getKeys().remove(key);
+                mergeSiblings(node,parent,rightSibling,key,indexInParent);
+            }
         }
-        return false;
+        return isDeleteed;
+    }
+    private void switchKeys(IBTreeNode node,int nodeKeyindex , IBTreeNode node2,int node2KeyIndex)
+    {
+        Comparable tempKey=(Comparable) node.getKeys().get(nodeKeyindex); //temp = node
+        node.getKeys().remove(nodeKeyindex);
+        node.getKeys().add(nodeKeyindex,node2.getKeys().get(node2KeyIndex));//node = node2
+        node2.getKeys().remove(node2KeyIndex);
+        node2.getKeys().add(node2KeyIndex,tempKey); //node2 = temp
+
+    }
+    private boolean deleteNonLeaf(IBTreeNode node, Comparable key) {
+        int nodeIndex=node.indexOfKey(key);
+        IBTreeNode pred=getPredecessor(node,nodeIndex);
+        IBTreeNode succ=getSuccessor(node,nodeIndex);
+        if(pred.getKeys().size() > node.getMinNumOfKeys()){
+            switchKeys(node,nodeIndex,pred,pred.getKeys().size()-1);
+            return pred.getKeys().remove(key);
+        }else if ( succ.getKeys().size() > node.getMinNumOfKeys()){
+            switchKeys(node,nodeIndex,succ,0);
+            return succ.getKeys().remove(key);
+        }else
+        {
+            switchKeys(node,nodeIndex,succ,0);
+            return deleteLeaf(succ,(Comparable) succ.getKeys().get(0));
+        }
+    }
+    private IBTreeNode getPredecssorHelper(IBTreeNode node){
+        //traverse most right
+        if(node.isLeaf()){
+            return (IBTreeNode) node.getKeys().get(node.getKeys().size()-1);
+        }else{
+            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(node.getKeys().size())));
+        }
+    }
+    private IBTreeNode getPredecessor(IBTreeNode node,int nodeIndex){
+        //get left node
+        return getPredecssorHelper((IBTreeNode) (node.getChildren().get(nodeIndex)));
+    }
+    private IBTreeNode getSuccessorHelper(IBTreeNode node){
+        //traverse to most left
+        if(node.isLeaf()){
+            return (IBTreeNode) node.getKeys().get(0);
+        }else{
+            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(0)));
+        }
+    }
+    private IBTreeNode getSuccessor(IBTreeNode node,int nodeIndex){
+        //get right node
+        return getSuccessorHelper((IBTreeNode) (node.getChildren().get(nodeIndex+1)));
     }
 
 
     private boolean delete(IBTreeNode node, Comparable key){
         if(node ==null)
             return false;
-        int index=node.indexOfKey(key);
-        if(index != -1)//found in this node
-        {
-            if(node.isLeaf()){
-                deleteLeaf(node,key);
-            }
+        if(node.isLeaf()){
+            return deleteLeaf(node,key);
+        }else{
+            return deleteNonLeaf(node,key);
         }
-        return false;
     }
-
-
 }
