@@ -15,7 +15,7 @@ a node with 2 keys b & c along with their values:
 public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
 
     private IBTreeNode parent;
-    private int numOfKeys;  //max no of keys ?
+    private int numOfKeys;  //max no of keys
     private boolean leaf;
     private List<K> keys;
     private List<V> values;
@@ -37,6 +37,26 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         }
         this.parent = Parent;
     }
+
+    @Override
+    public int indexOfKey(Comparable k) {
+        for (int i = 0; i < this.keys.size(); i++) {
+            if (this.keys.get(i).compareTo((K) k)== 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int getMinNumOfKeys() {
+        return (int) Math.ceil( this.numOfKeys/2f);
+    }
+
+    public BTreeNode getParent(){
+        return null;
+    }
+
     @Override
     public boolean isfull(){
         return this.keys.size() == this.numOfKeys;
@@ -94,7 +114,7 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     }
     @Override
     public void print(Integer count){
-int             i=0;
+        int i=0;
 
         for (Comparable key : keys) {
             System.out.print(key+":"+values.get(i));

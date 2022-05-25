@@ -17,6 +17,11 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	void setNumOfKeys(int numOfKeys);
 
 	/**
+	 * @return return min number of keys in this node.
+	 */
+	int getMinNumOfKeys();
+
+	/**
 	 * @return if the node is leaf or not.
 	 */
 	boolean isLeaf();
@@ -59,17 +64,20 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	/**
 	 * @return true if the node is full, false otherwise.
 	 */
-	public boolean isfull();
-	public IBTreeNode getParent();
+	boolean isfull();
+	IBTreeNode getParent();
 
 	/**
 	 * @param history a record of tree-insertion indices
 	 * @return the new root if the root has split or null
 	 */
 	IBTreeNode<K,V> split (Stack<Integer> history);
-
 	void print(Integer count);
-
-
+	/**
+	 *
+	 * @param k key
+	 * @return index of key in keys if not found then return -1
+	 */
+	int indexOfKey(Comparable k);
 	void setParent(IBTreeNode<K, V> parent);
 }
