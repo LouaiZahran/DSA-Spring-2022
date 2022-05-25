@@ -220,7 +220,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         IBTreeNode<K,V> current = root;
         while (current!=null) {
             int key_index=0;
-            while (key_index < current.getKeys().size() && (key.compareTo((K) (current.getKeys().get(key_index))) >= 0)) {
+            while (key_index < current.getKeys().size() && (key.compareTo((K)(current.getKeys().get(key_index))) >= 0)) {
                 if (key.compareTo((K) (current.getKeys().get(key_index))) == 0) {
                     return current.getValues().get(key_index);
                 }
@@ -237,7 +237,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         IBTreeNode<K,V> current = root;
         while (current!=null) {
             int key_index=0;
-            while (key_index < current.getKeys().size() && (key.compareTo((K) (current.getKeys().get(key_index))) >= 0)) {
+            while (key_index < current.getKeys().size() && (key.compareTo(((K)(current.getKeys().get(key_index)))) >= 0)) {
                 if (key.compareTo((K) (current.getKeys().get(key_index))) == 0) {
                     return current;
                 }
@@ -373,9 +373,9 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     private IBTreeNode getPredecssorHelper(IBTreeNode node){
         //traverse most right
         if(node.isLeaf()){
-            return (IBTreeNode) node.getChildren().get(node.getChildren().size()-1);
+            return node;
         }else{
-            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(node.getChildren().size())));
+            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(node.getChildren().size()-1)));
         }
     }
     private IBTreeNode getPredecessor(IBTreeNode node,int nodeIndex){
@@ -385,7 +385,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     private IBTreeNode getSuccessorHelper(IBTreeNode node){
         //traverse to most left
         if(node.isLeaf()){
-            return (IBTreeNode) node.getKeys().get(0);
+            return node;
         }else{
             return getPredecssorHelper((IBTreeNode)(node.getChildren().get(0)));
         }
