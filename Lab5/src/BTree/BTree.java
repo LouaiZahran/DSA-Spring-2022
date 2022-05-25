@@ -232,9 +232,24 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }
         return null;
     }
+    private IBTreeNode searchNode(Comparable key){
+        IBTreeNode<K,V> current = root;
+        while (current!=null) {
+            int key_index=0;
+            while (key_index < current.getKeys().size() && (key.compareTo((K) (current.getKeys().get(key_index))) >= 0)) {
+                if (key.compareTo((K) (current.getKeys().get(key_index))) == 0) {
+                    return current;
+                }
+                key_index++;
+            }
+            current =  (current.getChildren().get(key_index));
+        }
+        return null;
+
+    }
     @Override
     public boolean delete(Comparable key) {
-        IBTreeNode node =(IBTreeNode) search(key);
+        IBTreeNode node = searchNode(key);
         if(node==null)
             return false;
         return delete(node,key);
