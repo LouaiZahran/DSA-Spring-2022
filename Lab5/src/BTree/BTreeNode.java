@@ -32,11 +32,11 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
         setKeys(keys);
         setValues(values);
         setChildren(children);
-        if(children.size()!=numOfKeys+1){
-            for(int i=children.size();i<numOfKeys+1;i++){
-                this.children.add(null);
-            }
-        }
+//        if(children.size()!=numOfKeys+1){
+//            for(int i=children.size();i<numOfKeys+1;i++){
+//                this.children.add(null);
+//            }
+//        }
         this.parent = Parent;
     }
 

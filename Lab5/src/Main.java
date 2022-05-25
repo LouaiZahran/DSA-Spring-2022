@@ -22,12 +22,31 @@ public class Main {
         }
         BiConsumer<Integer, Integer> fun = (x, y) -> {
             var found = t.search(x);
-            System.out.println("->"+ x + " : found: "+ found +" expected: "+y );
+//          System.out.println("->"+ x + " : found: "+ found +" expected: "+y );
             if(!found.equals(y)){
                 throw new RuntimeException("INCORRECT");
             };
         };
+        t.getRoot().print();
         input.forEach(fun);
+        ArrayList<Integer> d = new ArrayList<>();
+        input.entrySet().forEach((x)->{
+            var deleted = t.delete(x.getKey());
+            System.out.println("=> "+ x.getKey() + " : "+ deleted);
+            if(!deleted){
+                throw new RuntimeException("deleted returned false for an existing element with value : "+ t.search(x.getKey()).toString());
+            };
+            d.add(x.getKey());
+            input.forEach((a,b)->{
+                var found = t.search(a);
+                if(d.contains(a) && found!= null){
+                    throw new RuntimeException(x+": expected to be missing");
+                }
+                if(found!= null && !found.equals(b)){
+                    throw new RuntimeException(b+": expected to be found");
+                };
+            });
+        });
 //        t.getRoot().print();
 
 //        ISearchEngine engine = new SearchEngine();

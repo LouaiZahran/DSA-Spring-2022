@@ -31,7 +31,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
     static <l> ArrayList<l> subList(List<l> a, int from, int to){
         var returned = new ArrayList<l>();
-        for(int i = from ; i < to ; i++){
+        for(int i = from ; i < to && i<a.size() ; i++){
             returned.add(a.get(i));
         }
         return returned;
@@ -41,8 +41,8 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             IBTreeNode newRoot = new BTreeNode<K,V>(minimumDegree*2-1,false,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K, V>>(),null);
             newRoot.getKeys().add(key);
             newRoot.getValues().add(value);
-            newRoot.getChildren().set(0,L);
-            newRoot.getChildren().set(1,R);
+            newRoot.getChildren().add(0,L);
+            newRoot.getChildren().add(1,R);
             L.setParent(newRoot);
             R.setParent(newRoot);
             return newRoot;
@@ -51,13 +51,11 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         Boolean was_full =leaf.isfull();
         leaf.getKeys().add(i,key);
         leaf.getValues().add(i,value);
-        leaf.getChildren().remove(i);
-        leaf.getChildren().add(i, L);
-        leaf.getChildren().add(i+1, R);
-        if(L!=null){
+        if(L!=null) {
+            leaf.getChildren().remove(i);
+            leaf.getChildren().add(i, L);
+            leaf.getChildren().add(i + 1, R);
             L.setParent(leaf);
-        }
-        if(R!=null){
             R.setParent(leaf);
         }
         if(was_full) {
@@ -65,8 +63,8 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             int med = (leaf.getKeys().size()) / 2;
             K mid_key = (K) leaf.getKeys().get(med);
             V val = (V) leaf.getValues().get(med);
-            IBTreeNode<K, V> LeftChild = new BTreeNode<K, V>(leaf.getNumOfKeys(), leaf.isLeaf(), subList(leaf.getKeys(), 0, med), subList(leaf.getValues(), 0, med), complete(subList(leaf.getChildren(), 0, med + 1), leaf.getNumOfKeys() + 1), null);
-            IBTreeNode<K, V> RightChild = new BTreeNode<K, V>(leaf.getNumOfKeys(), leaf.isLeaf(), subList(leaf.getKeys(), med + 1, leaf.getKeys().size()), subList(leaf.getValues(), med + 1, leaf.getValues().size()), complete(subList(leaf.getChildren(), med + 1, leaf.getChildren().size()), leaf.getNumOfKeys() + 1), null);
+            IBTreeNode<K, V> LeftChild = new BTreeNode<K, V>(leaf.getNumOfKeys(), leaf.isLeaf(), subList(leaf.getKeys(), 0, med), subList(leaf.getValues(), 0, med), subList(leaf.getChildren(), 0, med + 1), null);
+            IBTreeNode<K, V> RightChild = new BTreeNode<K, V>(leaf.getNumOfKeys(), leaf.isLeaf(), subList(leaf.getKeys(), med + 1, leaf.getKeys().size()), subList(leaf.getValues(), med + 1, leaf.getValues().size()), subList(leaf.getChildren(), med + 1, leaf.getChildren().size()), null);
             for (IBTreeNode child : LeftChild.getChildren()) {
                 if (child != null) {
                     child.setParent(LeftChild);
