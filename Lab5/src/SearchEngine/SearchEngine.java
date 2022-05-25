@@ -79,7 +79,7 @@ public class SearchEngine implements ISearchEngine{
         List<ISearchResult> list = new ArrayList<>();
         for(String documentId: insertedDocuments){
             IBTree<String, Integer> document = engine.search(documentId);
-            int frequency = document.search(word);
+            Integer frequency = document.search(word);
             if(frequency != 0)
                 list.add(new SearchResult(documentId, frequency));
         }
@@ -105,8 +105,6 @@ public class SearchEngine implements ISearchEngine{
     @Override
     public void print(int count){
         engine.getRoot().print(count);
-        insertedDocuments.forEach((string)->{
-            System.out.println(string);
-        });
+        System.out.println(insertedDocuments.size());
     }
 }

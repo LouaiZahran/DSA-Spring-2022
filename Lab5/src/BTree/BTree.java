@@ -23,22 +23,63 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     public IBTreeNode getRoot() {
         return root;
     }
-
-    private void insert(IBTreeNode leaf, Comparable key, Object value,Stack<Integer> history){
-//        int i = 0;
-//        while(i<current.getKeys().size()&&key.compareTo((K)current.getKeys().get(i))>0){
-//            i++;
-//        }
+    private List<IBTreeNode<K,V>> complete(ArrayList<IBTreeNode<K,V>> list, int i) {
+        for (int j = list.size(); j < i; j++) {
+            list.add(null);
+        }
+        return list;
+    }
+    static <l> ArrayList<l> subList(List<l> a, int from, int to){
+        var returned = new ArrayList<l>();
+        for(int i = from ; i < to ; i++){
+            returned.add(a.get(i));
+        }
+        return returned;
+    }
+    private IBTreeNode<K,V> insert(IBTreeNode leaf, Comparable key, Object value,IBTreeNode L,IBTreeNode R,Stack<Integer> history){
+        if(leaf==null){
+            IBTreeNode newRoot = new BTreeNode<K,V>(minimumDegree*2-1,false,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K, V>>(),null);
+            newRoot.getKeys().add(key);
+            newRoot.getValues().add(value);
+            newRoot.getChildren().set(0,L);
+            newRoot.getChildren().set(1,R);
+            L.setParent(newRoot);
+            R.setParent(newRoot);
+            return newRoot;
+        }
         int i = history.pop();
         Boolean was_full =leaf.isfull();
         leaf.getKeys().add(i,key);
         leaf.getValues().add(i,value);
-
-        if(was_full){
-            IBTreeNode newRoot_perhaps = leaf.split(history);
-            if(newRoot_perhaps!=null){
-                root = newRoot_perhaps;
+        leaf.getChildren().remove(i);
+        leaf.getChildren().add(i, L);
+        leaf.getChildren().add(i+1, R);
+        if(L!=null){
+            L.setParent(leaf);
+        }
+        if(R!=null){
+            R.setParent(leaf);
+        }
+        if(was_full) {
+            //split
+            int med = (leaf.getKeys().size()) / 2;
+            K mid_key = (K) leaf.getKeys().get(med);
+            V val = (V) leaf.getValues().get(med);
+            IBTreeNode<K, V> LeftChild = new BTreeNode<K, V>(leaf.getNumOfKeys(), leaf.isLeaf(), subList(leaf.getKeys(), 0, med), subList(leaf.getValues(), 0, med), complete(subList(leaf.getChildren(), 0, med + 1), leaf.getNumOfKeys() + 1), null);
+            IBTreeNode<K, V> RightChild = new BTreeNode<K, V>(leaf.getNumOfKeys(), leaf.isLeaf(), subList(leaf.getKeys(), med + 1, leaf.getKeys().size()), subList(leaf.getValues(), med + 1, leaf.getValues().size()), complete(subList(leaf.getChildren(), med + 1, leaf.getChildren().size()), leaf.getNumOfKeys() + 1), null);
+            for (IBTreeNode child : LeftChild.getChildren()) {
+                if (child != null) {
+                    child.setParent(LeftChild);
+                }
             }
+            for (IBTreeNode child : RightChild.getChildren()) {
+                if (child != null) {
+                    child.setParent(RightChild);
+                }
+            }
+            return insert(leaf.getParent(), mid_key, val, LeftChild, RightChild, history);
+        }else{
+            return null;
         }
     }
     private IBTreeNode<K,V> getLeafNode(Comparable key, Object value, Stack<Integer> insertionHistory){
@@ -78,7 +119,10 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         Stack<Integer> insertionH = new Stack<>();
         IBTreeNode<K,V> leaf = getLeafNode(key,value,insertionH);
         if(leaf==null){return;}
-        insert(leaf,key,value,insertionH);
+        IBTreeNode<K,V> R = insert(leaf,key,value,null,null,insertionH);
+        if(R!=null){
+            root = R;
+        }
     }
 //    @Override
 //    public void insert(Comparable key, Object value) {
@@ -172,35 +216,21 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
 //        }
 //    }
 
+
     @Override
-    public Object search(Comparable key) {
-        return search(root, key);
-    }
-
-    private Object search(IBTreeNode node, Comparable key){
-        if(node == null)
-            return null;
-
-        if(key.compareTo(node.getKeys().get(0)) == -1)
-            return search((IBTreeNode) node.getChildren().get(0), key);
-
-        int length = node.getKeys().size();
-        if(key.compareTo(node.getKeys().get(length-1))==1)
-            return search((IBTreeNode) node.getChildren().get(length),key);
-
-        for(int i=0; i<length - 1; i++){
-            K currentKey = (K) node.getKeys().get(i);
-            K nextKey = (K) node.getKeys().get(i+1);
-            if(key.compareTo(currentKey) == 0){
-                return node.getValues().get(i);
+    public Object search( Comparable key){
+        IBTreeNode<K,V> current = root;
+        while (current!=null) {
+            int key_index=0;
+            while (key_index < current.getKeys().size() && (key.compareTo((K) (current.getKeys().get(key_index))) >= 0)) {
+                if (key.compareTo((K) (current.getKeys().get(key_index))) == 0) {
+                    return current.getValues().get(key_index);
+                }
+                key_index++;
             }
-            if(key.compareTo(currentKey) == 1 && key.compareTo(nextKey) == -1)
-                return search((IBTreeNode) node.getChildren().get(i+1), key);
+            current = ((IBTreeNode) (current.getChildren().get(key_index)));
         }
-        if(key.compareTo(node.getKeys().get(length - 1)) == 0)
-            return node.getValues().get(length - 1);
-        else
-            return search((IBTreeNode) node.getChildren().get(length), key);
+        return null;
     }
 
     @Override
