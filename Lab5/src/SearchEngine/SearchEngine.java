@@ -80,7 +80,7 @@ public class SearchEngine implements ISearchEngine{
         for(String documentId: insertedDocuments){
             IBTree<String, Integer> document = engine.search(documentId);
             Integer frequency = document.search(word);
-            if(frequency != 0)
+            if(frequency != null)
                 list.add(new SearchResult(documentId, frequency));
         }
         return list;

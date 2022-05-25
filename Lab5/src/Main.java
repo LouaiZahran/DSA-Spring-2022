@@ -12,7 +12,7 @@ import SearchEngine.SearchEngine;
 public class Main {
     public static void main(String args[]){
         BTree<Integer,String> t = new BTree(2);
-        Integer c = new Integer(0);
+        Integer c = 0;
 
         for (int i = 0; i < 6; i++) {
             t.insert((int)(Math.random()*100),"s");
