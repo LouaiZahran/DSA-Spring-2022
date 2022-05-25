@@ -14,7 +14,7 @@ public class Main {
     public static void main(String args[]) {
         BTree<Integer, Integer> t = new BTree(2);
         HashMap<Integer, Integer> input = new HashMap<>();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 10; i++) {
             Integer k = (int) (Math.random() * 90000);
             Integer v = (int) (Math.random() * 90000);
             input.put(k,v);
@@ -27,7 +27,16 @@ public class Main {
                 throw new RuntimeException("INCORRECT");
             };
         };
+        BiConsumer<Integer, Integer> deletion = (x, y) -> {
+            var deleted= t.delete(x);
+            var found = t.search(x);
+            System.out.println(found);
+            if(found!=null){
+                throw new RuntimeException("INCORRECT");
+            };
+        };
         input.forEach(fun);
+        input.forEach(deletion);
 //        t.getRoot().print();
 
 //        ISearchEngine engine = new SearchEngine();
