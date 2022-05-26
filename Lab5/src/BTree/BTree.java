@@ -256,25 +256,36 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
     private void borrowFromLeftSibling(IBTreeNode parent,IBTreeNode node,IBTreeNode leftSibling, Comparable oldParentKey, Comparable newParentKey ){
         int oldParentIndex=parent.indexOfKey(oldParentKey);//get index in parent key to be demoted
+        node.getValues().add(0,parent.getValues().get(oldParentIndex));
         node.getKeys().add(0,oldParentKey); //add from left
         parent.getKeys().remove(oldParentIndex);  //remove old parent
+        parent.getValues().remove(oldParentIndex);
         parent.getKeys().add(oldParentIndex,newParentKey); //add new parent
+        parent.getValues().add(oldParentIndex,leftSibling.getValues().get(leftSibling.getValues().size()-1));
         leftSibling.getKeys().remove(newParentKey);     //remove new parent from his old node
+        leftSibling.getValues().remove(leftSibling.getValues().size()-1);
     }
     private void borrowFromRightSibling(IBTreeNode parent,IBTreeNode node,IBTreeNode rightSibling, Comparable oldParentKey, Comparable newParentKey ){
         int oldParentIndex = parent.indexOfKey(oldParentKey); // get index in parent key to be demoted
         node.getKeys().add(node.getKeys().size()-1,oldParentKey);  // add from right
+        node.getValues().add(node.getValues().size()-1,oldParentKey);
         parent.getKeys().remove(oldParentIndex); //remove old parent
+        parent.getValues().remove(oldParentIndex);
         parent.getKeys().add(oldParentIndex,newParentKey);//add new parent
+        parent.getValues().add(oldParentIndex,rightSibling.getValues().get(0));
         rightSibling.getKeys().remove(oldParentKey); //remove new parent from his old node
+        rightSibling.getValues().remove(0);
     }
     private void mergeSiblings(IBTreeNode node, IBTreeNode parent,IBTreeNode rightSibling,int indexInParent) {
         node.getKeys().add(parent.getKeys().get(indexInParent));
+        node.getValues().add(parent.getValues().get(indexInParent));
         node.getKeys().addAll(rightSibling.getKeys());
-        if(parent.getParent()!=null)
+        node.getValues().addAll(rightSibling.getValues());
+        if(parent != this.root)
             delete(parent,(Comparable) parent.getKeys().get(indexInParent));//remove parent
         else{
             parent.getKeys().remove(indexInParent);//in root
+            node.getValues().remove(indexInParent);
             if(parent.getKeys().size()==0)
             {
                 this.root=node;
@@ -289,55 +300,66 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         boolean isDeleted=false;
 
         if(node.getKeys().size()> node.getMinNumOfKeys()){//node leaf and has more than min keys
+            int index=node.indexOfKey(key);
+            node.getValues().remove(index);
             isDeleted |=node.getKeys().remove(key);
         }
         else{ // borrow from right sibling or left sibling or merge
             //less than smallest key in parent then has no left sibling
             IBTreeNode parent= node.getParent();
             int indexInParent=0;
-            boolean canBorrowFromRightSibling=true;
-            boolean canBorrowFromLeftSibling=true;
-            for(;indexInParent<parent.getKeys().size();indexInParent++){
-                if(key.compareTo(parent.getKeys().get(0))<0) //its is the most left node
-                {
-                    canBorrowFromLeftSibling=false;
-                    break;
-                }
-                if(key.compareTo(parent.getKeys().get(parent.getKeys().size()-1))>0) {//its the most right node
-                    canBorrowFromRightSibling=false;
-                    break;
-                }
-                if(key.compareTo(parent.getKeys().get(indexInParent)) > 0
-                        &&  key.compareTo(parent.getKeys().get(indexInParent+1)) < 0 ){
-                    break;
+            boolean hasLeftSibling =false;
+            boolean hasRightSibling =true;
+//            boolean canBorrowFromRightSibling=true;
+//            boolean canBorrowFromLeftSibling=true;
+            if(key.compareTo(parent.getKeys().get(0))<0)
+                hasRightSibling=true;
+            if(key.compareTo(parent.getKeys().get(parent.getKeys().size()-1))>0) {
+                hasLeftSibling = true;
+                indexInParent=parent.getKeys().size();
+            }
+            if(!hasLeftSibling && !hasLeftSibling){
+                for(;indexInParent<parent.getKeys().size();indexInParent++){
+                    if(key.compareTo(parent.getKeys().get(indexInParent)) > 0
+                            &&  key.compareTo(parent.getKeys().get(indexInParent+1)) < 0 ){
+                        hasLeftSibling=true;
+                        hasRightSibling=true;
+                        indexInParent++;
+                        break;
+                    }
                 }
             }
-            boolean hasLeftSibling = canBorrowFromLeftSibling;
-            boolean hasRightSibling = indexInParent + 2 < parent.getChildren().size() && canBorrowFromRightSibling;
+//            boolean hasLeftSibling = canBorrowFromLeftSibling;
+//            boolean hasRightSibling = canBorrowFromRightSibling;
 
-            IBTreeNode leftSibling=hasLeftSibling?(IBTreeNode)(parent.getChildren().get(indexInParent)) :null;
-            IBTreeNode rightSibling=hasRightSibling?(IBTreeNode)(parent.getChildren().get(indexInParent+2)):null;
-
+            IBTreeNode leftSibling=hasLeftSibling?(IBTreeNode)(parent.getChildren().get(indexInParent-1)) :null;
+            IBTreeNode rightSibling=hasRightSibling?(IBTreeNode)(parent.getChildren().get(indexInParent+1)):null;
+            boolean canBorrowFromRightSibling=true;
+            boolean canBorrowFromLeftSibling=true;
             canBorrowFromRightSibling &= hasRightSibling && rightSibling.getKeys().size() > rightSibling.getMinNumOfKeys();
             canBorrowFromLeftSibling  &= hasLeftSibling && leftSibling.getKeys().size() > leftSibling.getMinNumOfKeys();
 
             if(canBorrowFromLeftSibling){
-                Comparable oldParentKey= (Comparable) parent.getKeys().get(indexInParent);
+                Comparable oldParentKey= (Comparable) parent.getKeys().get(indexInParent-1);
                 Comparable  newParentKey = (Comparable) leftSibling.getKeys().get(leftSibling.getKeys().size()-1);
 
                 borrowFromLeftSibling(parent, node,leftSibling,oldParentKey,newParentKey);
+                node.getValues().remove(node.indexOfKey(key));
                 isDeleted |=node.getKeys().remove(key); // remove the desired node
             }else if(canBorrowFromRightSibling){
-                Comparable oldParentKey = (Comparable) parent.getKeys().get(indexInParent+1);
+                Comparable oldParentKey = (Comparable) parent.getKeys().get(indexInParent);
                 Comparable newParentKey = (Comparable) rightSibling.getKeys().get(0);
 
                 borrowFromRightSibling(parent, node,rightSibling,oldParentKey,newParentKey);
+                node.getValues().remove(node.indexOfKey(key));
                 isDeleted |= node.getKeys().remove(key); //remove the desired node
             }
             else if(hasLeftSibling) {
+                node.getValues().remove(node.indexOfKey(key));
                 isDeleted |= node.getKeys().remove(key);
-                mergeSiblings(leftSibling,parent, node,indexInParent);
+                mergeSiblings(leftSibling,parent, node,indexInParent-1);
             } else if (hasRightSibling) {
+                node.getValues().remove(node.indexOfKey(key));
                 isDeleted |=  node.getKeys().remove(key);
                 mergeSiblings(node,parent,rightSibling,indexInParent);
             }
@@ -347,9 +369,14 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     private void switchKeys(IBTreeNode node,int nodeKeyindex , IBTreeNode node2,int node2KeyIndex)
     {
         Comparable tempKey=(Comparable) node.getKeys().get(nodeKeyindex); //temp = node
+        Comparable tempValue = (Comparable) node.getValues().get(nodeKeyindex);
         node.getKeys().remove(nodeKeyindex);
+        node.getValues().remove(nodeKeyindex);
         node.getKeys().add(nodeKeyindex,node2.getKeys().get(node2KeyIndex));//node = node2
+        node.getValues().add(nodeKeyindex,node2.getValues().get(node2KeyIndex));
+        node2.getValues().remove(node2KeyIndex);
         node2.getKeys().remove(node2KeyIndex);
+        node2.getValues().add(node2KeyIndex,tempValue);
         node2.getKeys().add(node2KeyIndex,tempKey); //node2 = temp
     }
     private boolean deleteNonLeaf(IBTreeNode node, Comparable key) {
@@ -358,9 +385,11 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         IBTreeNode succ=getSuccessor(node,nodeIndex);
         if(pred.getKeys().size() > node.getMinNumOfKeys()){
             switchKeys(node,nodeIndex,pred,pred.getKeys().size()-1);
+            pred.getValues().remove(pred.indexOfKey(key));
             return pred.getKeys().remove(key);
         }else if ( succ.getKeys().size() > node.getMinNumOfKeys()){
             switchKeys(node,nodeIndex,succ,0);
+            succ.getValues().remove(succ.indexOfKey(key));
             return succ.getKeys().remove(key);
         }else
         {
@@ -399,8 +428,12 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         if(node ==null)
             return false;
         if(node.isLeaf() && node == this.root) //root
+        {
+            int i = node.indexOfKey(key);
+            node.getValues().remove(i);
             return node.getKeys().remove(key);
-        if(node.isLeaf()){
+        }
+        else if(node.isLeaf()){
             return deleteLeaf(node,key);
         }else{
             return deleteNonLeaf(node,key);

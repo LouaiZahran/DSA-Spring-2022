@@ -48,7 +48,7 @@ public class Main {
 //            });
         });
 //        t.getRoot().print();
-
+System.out.println("H");
 //        ISearchEngine engine = new SearchEngine();
 //        List<Doc> docs;
 //        try {
