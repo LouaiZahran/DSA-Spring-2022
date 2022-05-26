@@ -285,7 +285,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             delete(parent,(Comparable) parent.getKeys().get(indexInParent));//remove parent
         else{
             parent.getKeys().remove(indexInParent);//in root
-            node.getValues().remove(indexInParent);
+            parent.getValues().remove(indexInParent);
             if(parent.getKeys().size()==0)
             {
                 this.root=node;
@@ -308,26 +308,22 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             //less than smallest key in parent then has no left sibling
             IBTreeNode parent= node.getParent();
             int indexInParent=0;
-            boolean hasLeftSibling =false;
+            boolean hasLeftSibling =true;
             boolean hasRightSibling =true;
 //            boolean canBorrowFromRightSibling=true;
 //            boolean canBorrowFromLeftSibling=true;
-            if(key.compareTo(parent.getKeys().get(0))<0)
-                hasRightSibling=true;
-            if(key.compareTo(parent.getKeys().get(parent.getKeys().size()-1))>0) {
-                hasLeftSibling = true;
-                indexInParent=parent.getKeys().size();
-            }
-            if(!hasLeftSibling && !hasLeftSibling){
-                for(;indexInParent<parent.getKeys().size();indexInParent++){
-                    if(key.compareTo(parent.getKeys().get(indexInParent)) > 0
-                            &&  key.compareTo(parent.getKeys().get(indexInParent+1)) < 0 ){
-                        hasLeftSibling=true;
-                        hasRightSibling=true;
-                        indexInParent++;
-                        break;
-                    }
+
+            for (;indexInParent<parent.getChildren().size();indexInParent++){
+                if(node==parent.getChildren().get(indexInParent)) {
+                    break;
                 }
+            }
+            if(indexInParent==parent.getChildren().size()-1){
+                hasRightSibling=false;
+            }
+            if(indexInParent==0)
+            {
+                hasLeftSibling=false;
             }
 //            boolean hasLeftSibling = canBorrowFromLeftSibling;
 //            boolean hasRightSibling = canBorrowFromRightSibling;
