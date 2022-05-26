@@ -65,13 +65,9 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	 * @return true if the node is full, false otherwise.
 	 */
 	boolean isfull();
+
 	IBTreeNode getParent();
 
-	/**
-	 * @param history a record of tree-insertion indices
-	 * @return the new root if the root has split or null
-	 */
-	IBTreeNode<K,V> split (Stack<Integer> history);
 	void print();
 	/**
 	 *

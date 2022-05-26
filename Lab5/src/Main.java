@@ -14,7 +14,7 @@ public class Main {
     public static void main(String args[]) {
 //        BTree<Integer, Integer> t = new BTree(2);
 //        HashMap<Integer, Integer> input = new HashMap<>();
-//        for (int i = 0; i < 10; i++) {
+//        for (int i = 0; i < 100; i++) {
 //            Integer k = (int) (Math.random() * 90000);
 //            Integer v = (int) (Math.random() * 90000);
 //            input.put(k,v);
@@ -47,7 +47,7 @@ public class Main {
 //////                };
 ////            });
 //        });
-////        t.getRoot().print();
+//////        t.getRoot().print();
 //System.out.println("H");
         ISearchEngine engine = new SearchEngine();
         List<Doc> docs;
@@ -65,8 +65,10 @@ public class Main {
         }
         engine.indexWebPage("Wikipedia Data Sample/wiki_00");
         engine.print();
-        List<ISearchResult> results = engine.searchByWordWithRanking("Beach");
-        for(ISearchResult result: results)
-            System.out.println(result.getId() + " " + result.getRank());
+        engine.deleteWebPage("Wikipedia Data Sample/wiki_00");
+        engine.print();
+//        List<ISearchResult> results = engine.searchByWordWithRanking("Beach");
+//        for(ISearchResult result: results)
+//            System.out.println(result.getId() + " " + result.getRank());
     }
 }

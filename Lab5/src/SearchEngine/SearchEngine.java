@@ -69,7 +69,7 @@ public class SearchEngine implements ISearchEngine{
         }
 
         for(Doc doc: docs) {
-            engine.delete(doc.getId());
+            System.out.println(engine.delete(doc.getId()));
             insertedDocuments.remove(doc.getId());
         }
     }

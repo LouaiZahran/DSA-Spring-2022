@@ -122,98 +122,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             root = R;
         }
     }
-//    @Override
-//    public void insert(Comparable key, Object value) {
-//        IBTreeNode current = root,next;
-//        if(current==null){
-//            current = new BTreeNode<K,V>(2*this.minimumDegree-1,true,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K,V>>());
-//            current.getKeys().add(key);
-//            current.getValues().add(value);
-//            this.root = current;
-//            return;
-//        }
-//        while(!current.isLeaf()){
-//            int key_index=-1;
-//            while(key_index+2<current.getKeys().size() && (key.compareTo((K) (current.getKeys().get(key_index+1)))>=0)){
-//                key_index++;
-//                if(key.compareTo((K) (current.getKeys().get(key_index)))==0){
-//                    current.getValues().set(key_index,value);
-//                    return;
-//                    // throw new RuntimeException("Key already exists");
-//                }
-//            }
-//            if(key_index<0){
-//                key_index=0;
-//            }
-//            next = ((IBTreeNode)(current.getChildren().get(key_index)));
-//            if(next == null){
-//                current.setLeaf(false);
-//                current.getChildren().set(key_index,new BTreeNode<K,V>(2*minimumDegree-1,true,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K,V>>()));
-//                next = ((IBTreeNode)(current.getChildren().get(key_index)));
-//            }
-//            if(!next.isfull()){
-//                current = next;
-//            }
-//            else{
-//                K med =(K)(next.split(current, key_index));
-//                if(key.compareTo(med)<0){
-//                    current = (IBTreeNode)current.getChildren().get(key_index);
-//                }
-//                else if(key.compareTo(med)>0){
-//                    current = (IBTreeNode)current.getChildren().get(key_index+1);
-//                }
-//                else{
-//                    assert (key.compareTo((K)current.getKeys().get(key_index))==0);
-//                    current.getValues().set(key_index,value);
-//                    return;
-//                }
-//            }
-//        }
-//
-//        int i = 0;
-//        while(i<current.getKeys().size()&&key.compareTo((K)current.getKeys().get(i))>0){
-//            i++;
-//        }
-//        if(current.getKeys().size()==i){
-//            if(!current.isfull()){
-//                current.getKeys().add(key);
-//                current.getValues().add(value);
-//                return;
-//            }
-//            else{
-//                BTreeNode newChild = new BTreeNode<K,V>(2*minimumDegree-1,true,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K,V>>());
-//                newChild.getKeys().add(key);
-//                newChild.getValues().add(value);
-//                current.getChildren().set(i,newChild);
-//                current.setLeaf(false);
-//                return;
-//            }
-//        }
-//        else if (key.compareTo((K)current.getKeys().get(i))!=0){
-//            if(!current.isfull()){
-//                current.getKeys().add(i,key);
-//                current.getValues().add(i,value);
-//                return;
-//            }
-//            else{
-//                BTreeNode newChild = new BTreeNode<K,V>(2*minimumDegree-1,true,new ArrayList<K>(),new ArrayList<V>(),new ArrayList<IBTreeNode<K,V>>());
-//                newChild.getKeys().add(key);
-//                newChild.getValues().add(value);
-//                if(key.compareTo((K)current.getKeys().get(i))<0){
-//                    current.setLeaf(false);
-//                    current.getChildren().set(i,newChild);
-//                }
-//                else if(key.compareTo((K)current.getKeys().get(i))>0){
-//                    current.setLeaf(false);
-//                    current.getChildren().set(i+1,newChild);
-//                }
-//            }
-//        }
-//        else{
-//            current.getValues().set(i,value);
-//        }
-//    }
-
 
     @Override
     public Object search( Comparable key){
@@ -293,8 +201,9 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }
         parent.getChildren().remove(indexInParent + 1); //remove right sibling
         parent.getChildren().remove(indexInParent); //remove node old children
-        if(node != this.root)
-            parent.getChildren().add(indexInParent, node);  //add new node
+        if(node != this.root) {//add new node
+            parent.getChildren().add(indexInParent, node);
+        }
     }
     private boolean deleteLeaf(IBTreeNode node,Comparable key){
         boolean isDeleted=false;
@@ -310,9 +219,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             int indexInParent=0;
             boolean hasLeftSibling =true;
             boolean hasRightSibling =true;
-//            boolean canBorrowFromRightSibling=true;
-//            boolean canBorrowFromLeftSibling=true;
-
             for (;indexInParent<parent.getChildren().size();indexInParent++){
                 if(node==parent.getChildren().get(indexInParent)) {
                     break;
@@ -325,9 +231,6 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             {
                 hasLeftSibling=false;
             }
-//            boolean hasLeftSibling = canBorrowFromLeftSibling;
-//            boolean hasRightSibling = canBorrowFromRightSibling;
-
             IBTreeNode leftSibling=hasLeftSibling?(IBTreeNode)(parent.getChildren().get(indexInParent-1)) :null;
             IBTreeNode rightSibling=hasRightSibling?(IBTreeNode)(parent.getChildren().get(indexInParent+1)):null;
             boolean canBorrowFromRightSibling=true;
@@ -365,7 +268,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     private void switchKeys(IBTreeNode node,int nodeKeyindex , IBTreeNode node2,int node2KeyIndex)
     {
         Comparable tempKey=(Comparable) node.getKeys().get(nodeKeyindex); //temp = node
-        Comparable tempValue = (Comparable) node.getValues().get(nodeKeyindex);
+        V tempValue = (V) node.getValues().get(nodeKeyindex);
         node.getKeys().remove(nodeKeyindex);
         node.getValues().remove(nodeKeyindex);
         node.getKeys().add(nodeKeyindex,node2.getKeys().get(node2KeyIndex));//node = node2
@@ -377,20 +280,21 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
     private boolean deleteNonLeaf(IBTreeNode node, Comparable key) {
         int nodeIndex=node.indexOfKey(key);
+
+        IBTreeNode succ =getSuccessor(node,nodeIndex);
         IBTreeNode pred=getPredecessor(node,nodeIndex);
-        IBTreeNode succ=getSuccessor(node,nodeIndex);
         if(pred.getKeys().size() > node.getMinNumOfKeys()){
             switchKeys(node,nodeIndex,pred,pred.getKeys().size()-1);
             pred.getValues().remove(pred.indexOfKey(key));
             return pred.getKeys().remove(key);
-        }else if ( succ.getKeys().size() > node.getMinNumOfKeys()){
+        }else if ( succ!=null&&succ.getKeys().size() > node.getMinNumOfKeys()){
             switchKeys(node,nodeIndex,succ,0);
             succ.getValues().remove(succ.indexOfKey(key));
-            return succ.getKeys().remove(key);
+            return  succ.getKeys().remove(key);
         }else
         {
-            switchKeys(node,nodeIndex,succ,0);
-            return deleteLeaf(succ,(Comparable) succ.getKeys().get(0));
+            switchKeys(node,nodeIndex,pred,pred.getKeys().size()-1);
+            return  deleteLeaf(pred,(Comparable) pred.getKeys().get(pred.getKeys().size()-1));
         }
     }
     private IBTreeNode getPredecssorHelper(IBTreeNode node){
@@ -416,6 +320,8 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
     private IBTreeNode getSuccessor(IBTreeNode node,int nodeIndex){
         //get right node
+        if(nodeIndex >=node.getChildren().size()-1)
+            return null;
         return getSuccessorHelper((IBTreeNode) (node.getChildren().get(nodeIndex+1)));
     }
 
