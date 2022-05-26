@@ -390,7 +390,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }else
         {
             switchKeys(node,nodeIndex,succ,0);
-            return delete(succ,(Comparable) succ.getKeys().get(0));
+            return deleteLeaf(succ,(Comparable) succ.getKeys().get(0));
         }
     }
     private IBTreeNode getPredecssorHelper(IBTreeNode node){
@@ -411,7 +411,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             return node;
         }
         else{
-            return getPredecssorHelper((IBTreeNode)(node.getChildren().get(0)));
+            return getSuccessorHelper((IBTreeNode)(node.getChildren().get(0)));
         }
     }
     private IBTreeNode getSuccessor(IBTreeNode node,int nodeIndex){
