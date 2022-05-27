@@ -201,6 +201,8 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
         }
         parent.getChildren().remove(indexInParent + 1); //remove right sibling
         parent.getChildren().remove(indexInParent); //remove node old children
+        parent.getKeys().remove(indexInParent);
+        parent.getValues().remove(indexInParent);
         if(node != this.root) {//add new node
             parent.getChildren().add(indexInParent, node);
         }
@@ -280,22 +282,25 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
     private boolean deleteNonLeaf(IBTreeNode node, Comparable key) {
         int nodeIndex=node.indexOfKey(key);
-
+        boolean isDeleted=false;
         IBTreeNode succ =getSuccessor(node,nodeIndex);
         IBTreeNode pred=getPredecessor(node,nodeIndex);
         if(pred.getKeys().size() > node.getMinNumOfKeys()){
             switchKeys(node,nodeIndex,pred,pred.getKeys().size()-1);
-            pred.getValues().remove(pred.indexOfKey(key));
-            return pred.getKeys().remove(key);
+            pred.getValues().remove(pred.getKeys().size()-1);
+            pred.getKeys().remove(pred.getKeys().size()-1);
+            isDeleted=true;
         }else if ( succ!=null&&succ.getKeys().size() > node.getMinNumOfKeys()){
             switchKeys(node,nodeIndex,succ,0);
-            succ.getValues().remove(succ.indexOfKey(key));
-            return  succ.getKeys().remove(key);
+            succ.getValues().remove(0);
+            succ.getKeys().remove(0);
+            isDeleted=true;
         }else
         {
             switchKeys(node,nodeIndex,pred,pred.getKeys().size()-1);
             return  deleteLeaf(pred,(Comparable) pred.getKeys().get(pred.getKeys().size()-1));
         }
+        return isDeleted;
     }
     private IBTreeNode getPredecssorHelper(IBTreeNode node){
         //traverse most right
@@ -320,8 +325,8 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
     private IBTreeNode getSuccessor(IBTreeNode node,int nodeIndex){
         //get right node
-        if(nodeIndex >=node.getChildren().size()-1)
-            return null;
+       /* if(nodeIndex >=node.getChildren().size()-1)
+            return null;*/
         return getSuccessorHelper((IBTreeNode) (node.getChildren().get(nodeIndex+1)));
     }
 
