@@ -104,7 +104,7 @@ public class SearchEngine implements ISearchEngine{
     }
     @Override
     public void print(){
-        engine.getRoot().print();
+        engine.getRoot();
         System.out.println(insertedDocuments.size());
     }
 }

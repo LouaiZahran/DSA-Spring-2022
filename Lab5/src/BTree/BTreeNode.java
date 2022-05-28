@@ -9,11 +9,13 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
 
     public int n;
     public K[] key;
+    public V[] value;
     public BTreeNode<K, V>[] child;
     public boolean leaf = true;
 
     public BTreeNode(int T){
         key = (K[])(new ArrayList<K>(2 * T - 1).toArray());
+        value = (V[])(new ArrayList<V>(2 * T - 1).toArray());
         child = (BTreeNode<K, V>[])(new ArrayList<BTreeNode<K, V>>(2 * T).toArray());
     }
 

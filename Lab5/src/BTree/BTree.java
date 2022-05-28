@@ -1,6 +1,5 @@
 package BTree;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 public class BTree<K extends Comparable<K>, V> implements IBTree{
@@ -16,7 +15,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
 
     // Search the key
-    public BTreeNode<K, V> Search(BTreeNode<K, V> x, K key) {
+    private BTreeNode<K, V> Search(BTreeNode<K, V> x, K key) {
         int i = 0;
         if (x == null)
             return null;
@@ -62,7 +61,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
 
     // Insert the key
-    public void Insert(final K key) {
+    private void Insert(final K key, final V value) {
         BTreeNode r = root;
         if (r.n == 2 * T - 1) {
             BTreeNode s = new BTreeNode(T);
@@ -71,21 +70,23 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             s.n = 0;
             s.child[0] = r;
             Split(s, 0, r);
-            _Insert(s, key);
+            _Insert(s, key, value);
         } else {
-            _Insert(r, key);
+            _Insert(r, key, value);
         }
     }
 
     // Insert the node
-    final private void _Insert(BTreeNode x, Comparable<K> k) {
+    final private void _Insert(BTreeNode x, K k, V v) {
 
         if (x.leaf) {
             int i = 0;
             for (i = x.n - 1; i >= 0 && k.compareTo((K) x.key[i]) < 0; i--) {
                 x.key[i + 1] = x.key[i];
+                x.value[i + 1] = x.value[i];
             }
             x.key[i + 1] = k;
+            x.value[i + 1] = v;
             x.n = x.n + 1;
         } else {
             int i = 0;
@@ -98,7 +99,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
                     i++;
                 }
             }
-            _Insert(x.child[i], k);
+            _Insert(x.child[i], k, v);
         }
 
     }
@@ -329,16 +330,19 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
 
     @Override
     public void insert(Comparable key, Object value) {
-
+        Insert((K)key, (V)value);
     }
 
     @Override
     public Object search(Comparable key) {
-        return null;
+        return Search(root, (K)key);
     }
 
     @Override
     public boolean delete(Comparable key) {
-        return false;
+        if(!Contain((K) key))
+            return false;
+        Remove((K) key);
+        return true;
     }
 }
