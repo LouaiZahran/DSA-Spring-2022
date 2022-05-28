@@ -1,32 +1,31 @@
 package BTree;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
+public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode<K, V>{
 
     public int n;
-    public K[] key;
-    public V[] value;
-    public BTreeNode<K, V>[] child;
+    public List<K> key;
+    public List<V> value;
+    public List<IBTreeNode<K, V>> child;
     public boolean leaf = true;
 
     public BTreeNode(int T){
-        key = (K[])(new ArrayList<K>(2 * T - 1).toArray());
-        value = (V[])(new ArrayList<V>(2 * T - 1).toArray());
-        child = (BTreeNode<K, V>[])(new ArrayList<BTreeNode<K, V>>(2 * T).toArray());
+        key = new ArrayList<>(2 * T - 1);
+        value = new ArrayList<>(2 * T - 1);
+        child = new ArrayList<>(2 * T);
     }
 
     public int Find(Comparable<K> k) {
         for (int i = 0; i < this.n; i++) {
-            if (this.key[i] == k) {
+            if (this.key.get(i) == k) {
                 return i;
             }
         }
         return -1;
-    };
+    }
 
     @Override
     public int getNumOfKeys() {
@@ -49,33 +48,33 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     }
 
     @Override
-    public List getKeys() {
-        return Arrays.stream(key).toList();
+    public List<K> getKeys() {
+        return key;
     }
 
     @Override
-    public void setKeys(List keys) {
-        key = (K[])keys.toArray();
+    public void setKeys(List<K> keys) {
+        key = keys;
     }
 
     @Override
-    public List getValues() {
-        return null;
+    public List<V> getValues() {
+        return value;
     }
 
     @Override
-    public void setValues(List values) {
-
+    public void setValues(List<V> values) {
+        value = values;
     }
 
     @Override
-    public List<IBTreeNode> getChildren() {
-        return null;
+    public List<IBTreeNode<K, V>> getChildren() {
+        return child;
     }
 
     @Override
-    public void setChildren(List children) {
-
+    public void setChildren(List<IBTreeNode<K, V>> children) {
+        child = children;
     }
 
 }

@@ -2,7 +2,7 @@ package BTree;
 
 import java.util.Stack;
 
-public class BTree<K extends Comparable<K>, V> implements IBTree{
+public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
 
     private final int T;
     private BTreeNode<K, V> root;
@@ -15,60 +15,61 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
 
     // Search the key
-    private BTreeNode<K, V> Search(BTreeNode<K, V> x, K key) {
-        int i = 0;
-        if (x == null)
+    private BTreeNode<K, V> Search(IBTreeNode<K, V> X, K key) {
+        int i;
+        if (X == null)
             return null;
+        BTreeNode<K, V> x = (BTreeNode<K, V>) X;
         for (i = 0; i < x.n; i++) {
-            if (key.compareTo(x.key[i]) < 0) {
+            if (key.compareTo(x.key.get(i)) < 0) {
                 break;
             }
-            if (key == x.key[i]) {
+            if (key == x.key.get(i)) {
                 return x;
             }
         }
         if (x.leaf) {
             return null;
         } else {
-            return Search(x.child[i], key);
+            return Search(x.child.get(i), key);
         }
     }
 
     // Split function
-    private void Split(BTreeNode x, int pos, BTreeNode y) {
-        BTreeNode z = new BTreeNode(T);
+    private void Split(BTreeNode<K, V> x, int pos, BTreeNode<K, V> y) {
+        BTreeNode<K, V> z = new BTreeNode<K, V>(T);
         z.leaf = y.leaf;
         z.n = T - 1;
         for (int j = 0; j < T - 1; j++) {
-            z.key[j] = y.key[j + T];
+            z.key.set(j, y.key.get(j + T));
         }
         if (!y.leaf) {
             for (int j = 0; j < T; j++) {
-                z.child[j] = y.child[j + T];
+                z.child.set(j, y.child.get(j + T));
             }
         }
         y.n = T - 1;
         for (int j = x.n; j >= pos + 1; j--) {
-            x.child[j + 1] = x.child[j];
+            x.child.set(j + 1, x.child.get(j));
         }
-        x.child[pos + 1] = z;
+        x.child.set(pos + 1, z);
 
         for (int j = x.n - 1; j >= pos; j--) {
-            x.key[j + 1] = x.key[j];
+            x.key.set(j + 1, x.key.get(j));
         }
-        x.key[pos] = y.key[T - 1];
+        x.key.set(pos, y.key.get(T - 1));
         x.n = x.n + 1;
     }
 
     // Insert the key
     private void Insert(final K key, final V value) {
-        BTreeNode r = root;
+        BTreeNode<K, V> r = root;
         if (r.n == 2 * T - 1) {
-            BTreeNode s = new BTreeNode(T);
+            BTreeNode<K, V> s = new BTreeNode<K, V>(T);
             root = s;
             s.leaf = false;
             s.n = 0;
-            s.child[0] = r;
+            s.child.set(0, r);
             Split(s, 0, r);
             _Insert(s, key, value);
         } else {
@@ -77,42 +78,44 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
 
     // Insert the node
-    final private void _Insert(BTreeNode x, K k, V v) {
+    private void _Insert(IBTreeNode<K, V> X, K k, V v) {
 
+        BTreeNode<K, V> x = (BTreeNode<K, V>) X;
+        int i;
         if (x.leaf) {
-            int i = 0;
-            for (i = x.n - 1; i >= 0 && k.compareTo((K) x.key[i]) < 0; i--) {
-                x.key[i + 1] = x.key[i];
-                x.value[i + 1] = x.value[i];
+            for (i = x.n - 1; i >= 0 && k.compareTo(x.key.get(i)) < 0; i--) {
+                x.key.set(i + 1, x.key.get(i));
+                x.value.set(i + 1, x.value.get(i));
             }
-            x.key[i + 1] = k;
-            x.value[i + 1] = v;
+            x.key.set(i + 1, k);
+            x.value.set(i + 1, v);
             x.n = x.n + 1;
         } else {
-            int i = 0;
-            for (i = x.n - 1; i >= 0 && k.compareTo((K) x.key[i]) < 0; i--) { };
+            for (i = x.n - 1; i >= 0 && k.compareTo(x.key.get(i)) < 0; i--) { }
             i++;
-            BTreeNode tmp = x.child[i];
+            BTreeNode<K, V> tmp = (BTreeNode<K, V>) x.child.get(i);
             if (tmp.n == 2 * T - 1) {
                 Split(x, i, tmp);
-                if (k.compareTo((K) x.key[i]) > 0) {
+                if (k.compareTo(x.key.get(i)) > 0) {
                     i++;
                 }
             }
-            _Insert(x.child[i], k, v);
+            _Insert(x.child.get(i), k, v);
         }
 
     }
 
-    private void Remove(BTreeNode x, Comparable<K> key) {
+    private void Remove(IBTreeNode<K, V> X ,K key) {
+
+        BTreeNode<K, V> x = (BTreeNode<K, V>) X;
         int pos = x.Find(key);
         if (pos != -1) {
             if (x.leaf) {
-                int i = 0;
-                for (i = 0; i < x.n && x.key[i] != key; i++) { }                ;
+                int i;
+                for (i = 0; i < x.n && x.key.get(i) != key; i++) { }
                 for (; i < x.n; i++) {
                     if (i != 2 * T - 2) {
-                        x.key[i] = x.key[i + 1];
+                        x.key.set(i, x.key.get(i + 1));
                     }
                 }
                 x.n--;
@@ -120,168 +123,160 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
             }
             if (!x.leaf) {
 
-                BTreeNode pred = x.child[pos];
+                BTreeNode<K, V> pred = (BTreeNode<K, V>) x.child.get(pos);
                 K predKey;
                 if (pred.n >= T) {
                     for (;;) {
                         if (pred.leaf) {
                             System.out.println(pred.n);
-                            predKey = (K) pred.key[pred.n - 1];
+                            predKey = pred.key.get(pred.n - 1);
                             break;
                         } else {
-                            pred = pred.child[pred.n];
+                            pred = (BTreeNode<K, V>) pred.child.get(pred.n);
                         }
                     }
                     Remove(pred, predKey);
-                    x.key[pos] = predKey;
+                    x.key.set(pos, predKey);
                     return;
                 }
 
-                BTreeNode nextNode = x.child[pos + 1];
+                BTreeNode<K, V> nextNode = (BTreeNode<K, V>) x.child.get(pos + 1);
                 if (nextNode.n >= T) {
-                    K nextKey = (K) nextNode.key[0];
+                    K nextKey = nextNode.key.get(0);
                     if (!nextNode.leaf) {
-                        nextNode = nextNode.child[0];
+                        nextNode = (BTreeNode<K, V>) nextNode.child.get(0);
                         for (;;) {
                             if (nextNode.leaf) {
-                                nextKey = (K) nextNode.key[nextNode.n - 1];
+                                nextKey = nextNode.key.get(nextNode.n - 1);
                                 break;
                             } else {
-                                nextNode = nextNode.child[nextNode.n];
+                                nextNode = (BTreeNode<K, V>) nextNode.child.get(nextNode.n);
                             }
                         }
                     }
                     Remove(nextNode, nextKey);
-                    x.key[pos] = nextKey;
+                    x.key.set(pos, nextKey);
                     return;
                 }
 
                 int temp = pred.n + 1;
-                pred.key[pred.n++] = x.key[pos];
+                pred.key.set(pred.n++, x.key.get(pos));
                 for (int i = 0, j = pred.n; i < nextNode.n; i++) {
-                    pred.key[j++] = nextNode.key[i];
+                    pred.key.set(j++, nextNode.key.get(i));
                     pred.n++;
                 }
                 for (int i = 0; i < nextNode.n + 1; i++) {
-                    pred.child[temp++] = nextNode.child[i];
+                    pred.child.set(temp++, nextNode.child.get(i));
                 }
 
-                x.child[pos] = pred;
+                x.child.set(pos, pred);
                 for (int i = pos; i < x.n; i++) {
                     if (i != 2 * T - 2) {
-                        x.key[i] = x.key[i + 1];
+                        x.key.set(i, x.key.get(i + 1));
                     }
                 }
                 for (int i = pos + 1; i < x.n + 1; i++) {
                     if (i != 2 * T - 1) {
-                        x.child[i] = x.child[i + 1];
+                        x.child.set(i, x.child.get(i + 1));
                     }
                 }
                 x.n--;
                 if (x.n == 0) {
                     if (x == root) {
-                        root = x.child[0];
+                        root = (BTreeNode<K, V>) x.child.get(0);
                     }
-                    x = x.child[0];
+                    x = (BTreeNode<K, V>) x.child.get(0);
                 }
                 Remove(pred, key);
-                return;
             }
         } else {
             for (pos = 0; pos < x.n; pos++) {
-                if (x.key[pos].compareTo(key) > 0) {
+                if (x.key.get(pos).compareTo(key) > 0) {
                     break;
                 }
             }
-            BTreeNode tmp = x.child[pos];
+            BTreeNode<K, V> tmp = (BTreeNode<K, V>) x.child.get(pos);
             if (tmp.n >= T) {
                 Remove(tmp, key);
                 return;
             }
-            if (true) {
-                BTreeNode nb = null;
-                K devider;
+            BTreeNode<K, V> nb;
+            K devider;
 
-                if (pos != x.n && x.child[pos + 1].n >= T) {
-                    devider = (K) x.key[pos];
-                    nb = x.child[pos + 1];
-                    x.key[pos] = nb.key[0];
-                    tmp.key[tmp.n++] = devider;
-                    tmp.child[tmp.n] = nb.child[0];
-                    for (int i = 1; i < nb.n; i++) {
-                        nb.key[i - 1] = nb.key[i];
-                    }
-                    for (int i = 1; i <= nb.n; i++) {
-                        nb.child[i - 1] = nb.child[i];
-                    }
-                    nb.n--;
-                    Remove(tmp, key);
-                    return;
-                } else if (pos != 0 && x.child[pos - 1].n >= T) {
-
-                    devider = (K) x.key[pos - 1];
-                    nb = x.child[pos - 1];
-                    x.key[pos - 1] = nb.key[nb.n - 1];
-                    BTreeNode child = nb.child[nb.n];
-                    nb.n--;
-
-                    for (int i = tmp.n; i > 0; i--) {
-                        tmp.key[i] = tmp.key[i - 1];
-                    }
-                    tmp.key[0] = devider;
-                    for (int i = tmp.n + 1; i > 0; i--) {
-                        tmp.child[i] = tmp.child[i - 1];
-                    }
-                    tmp.child[0] = child;
-                    tmp.n++;
-                    Remove(tmp, key);
-                    return;
-                } else {
-                    BTreeNode lt = null;
-                    BTreeNode rt = null;
-                    boolean last = false;
-                    if (pos != x.n) {
-                        devider = (K) x.key[pos];
-                        lt = x.child[pos];
-                        rt = x.child[pos + 1];
-                    } else {
-                        devider = (K) x.key[pos - 1];
-                        rt = x.child[pos];
-                        lt = x.child[pos - 1];
-                        last = true;
-                        pos--;
-                    }
-                    for (int i = pos; i < x.n - 1; i++) {
-                        x.key[i] = x.key[i + 1];
-                    }
-                    for (int i = pos + 1; i < x.n; i++) {
-                        x.child[i] = x.child[i + 1];
-                    }
-                    x.n--;
-                    lt.key[lt.n++] = devider;
-
-                    for (int i = 0, j = lt.n; i < rt.n + 1; i++, j++) {
-                        if (i < rt.n) {
-                            lt.key[j] = rt.key[i];
-                        }
-                        lt.child[j] = rt.child[i];
-                    }
-                    lt.n += rt.n;
-                    if (x.n == 0) {
-                        if (x == root) {
-                            root = x.child[0];
-                        }
-                        x = x.child[0];
-                    }
-                    Remove(lt, key);
-                    return;
+            if (pos != x.n && x.child.get(pos + 1).getNumOfKeys() >= T) {
+                devider = x.key.get(pos);
+                nb = (BTreeNode<K, V>) x.child.get(pos + 1);
+                x.key.set(pos, nb.key.get(0));
+                tmp.key.set(tmp.n++, devider);
+                tmp.child.set(tmp.n, nb.child.get(0));
+                for (int i = 1; i < nb.n; i++) {
+                    nb.key.set(i - 1, nb.key.get(i));
                 }
+                for (int i = 1; i <= nb.n; i++) {
+                    nb.child.set(i - 1, nb.child.get(i));
+                }
+                nb.n--;
+                Remove(tmp, key);
+            } else if (pos != 0 && x.child.get(pos - 1).getNumOfKeys() >= T) {
+
+                devider = x.key.get(pos - 1);
+                nb = (BTreeNode<K, V>) x.child.get(pos - 1);
+                x.key.set(pos - 1, nb.key.get(nb.n - 1));
+                BTreeNode<K, V> child = (BTreeNode<K, V>) nb.child.get(nb.n);
+                nb.n--;
+
+                for (int i = tmp.n; i > 0; i--) {
+                    tmp.key.set(i, tmp.key.get(i - 1));
+                }
+                tmp.key.set(0, devider);
+                for (int i = tmp.n + 1; i > 0; i--) {
+                    tmp.child.set(i, tmp.child.get(i - 1));
+                }
+                tmp.child.set(0, child);
+                tmp.n++;
+                Remove(tmp, key);
+            } else {
+                BTreeNode<K, V> lt;
+                BTreeNode<K, V> rt;
+                if (pos != x.n) {
+                    devider = x.key.get(pos);
+                    lt = (BTreeNode<K, V>) x.child.get(pos);
+                    rt = (BTreeNode<K, V>) x.child.get(pos + 1);
+                } else {
+                    devider = x.key.get(pos - 1);
+                    rt = (BTreeNode<K, V>) x.child.get(pos);
+                    lt = (BTreeNode<K, V>) x.child.get(pos - 1);
+                    pos--;
+                }
+                for (int i = pos; i < x.n - 1; i++) {
+                    x.key.set(i, x.key.get(i + 1));
+                }
+                for (int i = pos + 1; i < x.n; i++) {
+                    x.child.set(i, x.child.get(i + 1));
+                }
+                x.n--;
+                lt.key.set(lt.n++, devider);
+
+                for (int i = 0, j = lt.n; i < rt.n + 1; i++, j++) {
+                    if (i < rt.n) {
+                        lt.key.set(j, rt.key.get(i));
+                    }
+                    lt.child.set(j, rt.child.get(i));
+                }
+                lt.n += rt.n;
+                if (x.n == 0) {
+                    if (x == root) {
+                        root = (BTreeNode<K, V>) x.child.get(0);
+                    }
+                    x = (BTreeNode<K, V>) x.child.get(0);
+                }
+                Remove(lt, key);
             }
         }
     }
 
     public void Remove(K key) {
-        BTreeNode x = Search(root, key);
+        BTreeNode<K, V> x = Search(root, key);
         if (x == null) {
             return;
         }
@@ -291,31 +286,27 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     public void Task(K a, K b) {
         Stack<K> st = new Stack<>();
         FindKeys(a, b, root, st);
-        while (st.isEmpty() == false) {
+        while (!st.isEmpty()) {
             this.Remove(root, st.pop());
         }
     }
 
-    private void FindKeys(K a, K b, BTreeNode x, Stack<K> st) {
-        int i = 0;
-        for (i = 0; i < x.n && x.key[i].compareTo(b) < 0; i++) {
-            if (x.key[i].compareTo(a) > 0) {
-                st.push((K)x.key[i]);
+    private void FindKeys(K a, K b, BTreeNode<K, V> x, Stack<K> st) {
+        int i;
+        for (i = 0; i < x.n && x.key.get(i).compareTo(b) < 0; i++) {
+            if (x.key.get(i).compareTo(a) > 0) {
+                st.push(x.key.get(i));
             }
         }
         if (!x.leaf) {
             for (int j = 0; j < i + 1; j++) {
-                FindKeys(a, b, x.child[j], st);
+                FindKeys(a, b, (BTreeNode<K, V>) x.child.get(j), st);
             }
         }
     }
 
     public boolean Contain(K k) {
-        if (this.Search(root, k) != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.Search(root, k) != null;
     }
 
     @Override
@@ -324,25 +315,25 @@ public class BTree<K extends Comparable<K>, V> implements IBTree{
     }
 
     @Override
-    public IBTreeNode getRoot() {
+    public IBTreeNode<K, V> getRoot() {
         return root;
     }
 
     @Override
-    public void insert(Comparable key, Object value) {
-        Insert((K)key, (V)value);
+    public void insert(K key, V value) {
+        Insert(key, value);
     }
 
     @Override
-    public Object search(Comparable key) {
-        return Search(root, (K)key);
+    public V search(K key) {
+        return (V) Search(root, key);
     }
 
     @Override
-    public boolean delete(Comparable key) {
-        if(!Contain((K) key))
+    public boolean delete(K key) {
+        if(!Contain(key))
             return false;
-        Remove((K) key);
+        Remove(key);
         return true;
     }
 }

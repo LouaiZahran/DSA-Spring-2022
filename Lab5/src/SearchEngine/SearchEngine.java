@@ -89,7 +89,7 @@ public class SearchEngine implements ISearchEngine{
     @Override
     public List<ISearchResult> searchByMultipleWordWithRanking(String sentence) {
         List<ISearchResult> list = new ArrayList<>();
-        String[] words = sentence.split("[\r\n\t\f]+|\n+");
+        String[] words = sentence.split("[\r\n\t\f ]+|\n+");
         for(String documentId: insertedDocuments){
             int minimumFrequency = Integer.MAX_VALUE;
             IBTree<String, Integer> document = engine.search(documentId);
