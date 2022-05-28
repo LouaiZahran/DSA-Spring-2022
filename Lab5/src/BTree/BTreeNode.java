@@ -29,7 +29,7 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode<K, V>{
 
     public int Find(Comparable<K> k) {
         for (int i = 0; i < this.n; i++) {
-            if (this.key.get(i) == k) {
+            if (this.key.get(i).compareTo((K) k) == 0) {
                 return i;
             }
         }

@@ -24,7 +24,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
             if (key.compareTo(x.key.get(i)) < 0) {
                 break;
             }
-            if (key == x.key.get(i)) {
+            if (key.compareTo(x.key.get(i)) == 0) {
                 return x;
             }
         }
@@ -42,6 +42,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
         z.n = T - 1;
         for (int j = 0; j < T - 1; j++) {
             z.key.set(j, y.key.get(j + T));
+            z.value.set(j, y.value.get(j + T));
         }
         if (!y.leaf) {
             for (int j = 0; j < T; j++) {
@@ -56,8 +57,10 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
 
         for (int j = x.n - 1; j >= pos; j--) {
             x.key.set(j + 1, x.key.get(j));
+            x.value.set(j + 1, x.value.get(j));
         }
         x.key.set(pos, y.key.get(T - 1));
+        x.value.set(pos, y.value.get(T - 1));
         x.n = x.n + 1;
     }
 
@@ -112,10 +115,11 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
         if (pos != -1) {
             if (x.leaf) {
                 int i;
-                for (i = 0; i < x.n && x.key.get(i) != key; i++) { }
+                for (i = 0; i < x.n && x.key.get(i).compareTo(key) != 0; i++) { }
                 for (; i < x.n; i++) {
                     if (i != 2 * T - 2) {
                         x.key.set(i, x.key.get(i + 1));
+                        x.value.set(i, x.value.get(i + 1));
                     }
                 }
                 x.n--;
@@ -125,11 +129,13 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
 
                 BTreeNode<K, V> pred = (BTreeNode<K, V>) x.child.get(pos);
                 K predKey;
+                V predValue;
                 if (pred.n >= T) {
                     for (;;) {
                         if (pred.leaf) {
                             System.out.println(pred.n);
                             predKey = pred.key.get(pred.n - 1);
+                            predValue = pred.value.get(pred.n - 1);
                             break;
                         } else {
                             pred = (BTreeNode<K, V>) pred.child.get(pred.n);
@@ -137,17 +143,20 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
                     }
                     Remove(pred, predKey);
                     x.key.set(pos, predKey);
+                    x.value.set(pos, predValue);
                     return;
                 }
 
                 BTreeNode<K, V> nextNode = (BTreeNode<K, V>) x.child.get(pos + 1);
                 if (nextNode.n >= T) {
                     K nextKey = nextNode.key.get(0);
+                    V nextValue = nextNode.value.get(0);
                     if (!nextNode.leaf) {
                         nextNode = (BTreeNode<K, V>) nextNode.child.get(0);
                         for (;;) {
                             if (nextNode.leaf) {
                                 nextKey = nextNode.key.get(nextNode.n - 1);
+                                nextValue = nextNode.value.get(nextNode.n - 1);
                                 break;
                             } else {
                                 nextNode = (BTreeNode<K, V>) nextNode.child.get(nextNode.n);
@@ -156,13 +165,16 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
                     }
                     Remove(nextNode, nextKey);
                     x.key.set(pos, nextKey);
+                    x.value.set(pos, nextValue);
                     return;
                 }
 
                 int temp = pred.n + 1;
-                pred.key.set(pred.n++, x.key.get(pos));
+                pred.key.set(pred.n, x.key.get(pos));
+                pred.value.set(pred.n++, x.value.get(pos));
                 for (int i = 0, j = pred.n; i < nextNode.n; i++) {
-                    pred.key.set(j++, nextNode.key.get(i));
+                    pred.key.set(j, nextNode.key.get(i));
+                    pred.value.set(j++, nextNode.value.get(i));
                     pred.n++;
                 }
                 for (int i = 0; i < nextNode.n + 1; i++) {
@@ -173,6 +185,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
                 for (int i = pos; i < x.n; i++) {
                     if (i != 2 * T - 2) {
                         x.key.set(i, x.key.get(i + 1));
+                        x.value.set(i, x.value.get(i + 1));
                     }
                 }
                 for (int i = pos + 1; i < x.n + 1; i++) {
@@ -202,15 +215,19 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
             }
             BTreeNode<K, V> nb;
             K devider;
-
+            V deviderValue;
             if (pos != x.n && x.child.get(pos + 1).getNumOfKeys() >= T) {
                 devider = x.key.get(pos);
+                deviderValue = x.value.get(pos);
                 nb = (BTreeNode<K, V>) x.child.get(pos + 1);
                 x.key.set(pos, nb.key.get(0));
-                tmp.key.set(tmp.n++, devider);
+                x.value.set(pos, nb.value.get(0));
+                tmp.key.set(tmp.n, devider);
+                tmp.value.set(tmp.n, deviderValue);
                 tmp.child.set(tmp.n, nb.child.get(0));
                 for (int i = 1; i < nb.n; i++) {
                     nb.key.set(i - 1, nb.key.get(i));
+                    nb.value.set(i - 1, nb.value.get(i));
                 }
                 for (int i = 1; i <= nb.n; i++) {
                     nb.child.set(i - 1, nb.child.get(i));
@@ -220,15 +237,19 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
             } else if (pos != 0 && x.child.get(pos - 1).getNumOfKeys() >= T) {
 
                 devider = x.key.get(pos - 1);
+                deviderValue = x.value.get(pos - 1);
                 nb = (BTreeNode<K, V>) x.child.get(pos - 1);
                 x.key.set(pos - 1, nb.key.get(nb.n - 1));
+                x.value.set(pos - 1, nb.value.get(nb.n - 1));
                 BTreeNode<K, V> child = (BTreeNode<K, V>) nb.child.get(nb.n);
                 nb.n--;
 
                 for (int i = tmp.n; i > 0; i--) {
                     tmp.key.set(i, tmp.key.get(i - 1));
+                    tmp.value.set(i, tmp.value.get(i - 1));
                 }
                 tmp.key.set(0, devider);
+                tmp.value.set(0, deviderValue);
                 for (int i = tmp.n + 1; i > 0; i--) {
                     tmp.child.set(i, tmp.child.get(i - 1));
                 }
@@ -240,26 +261,31 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
                 BTreeNode<K, V> rt;
                 if (pos != x.n) {
                     devider = x.key.get(pos);
+                    deviderValue = x.value.get(pos);
                     lt = (BTreeNode<K, V>) x.child.get(pos);
                     rt = (BTreeNode<K, V>) x.child.get(pos + 1);
                 } else {
                     devider = x.key.get(pos - 1);
+                    deviderValue = x.value.get(pos - 1);
                     rt = (BTreeNode<K, V>) x.child.get(pos);
                     lt = (BTreeNode<K, V>) x.child.get(pos - 1);
                     pos--;
                 }
                 for (int i = pos; i < x.n - 1; i++) {
                     x.key.set(i, x.key.get(i + 1));
+                    x.value.set(i, x.value.get(i + 1));
                 }
                 for (int i = pos + 1; i < x.n; i++) {
                     x.child.set(i, x.child.get(i + 1));
                 }
                 x.n--;
-                lt.key.set(lt.n++, devider);
+                lt.key.set(lt.n, devider);
+                lt.value.set(lt.n++, deviderValue);
 
                 for (int i = 0, j = lt.n; i < rt.n + 1; i++, j++) {
                     if (i < rt.n) {
                         lt.key.set(j, rt.key.get(i));
+                        lt.value.set(j, rt.value.get(i));
                     }
                     lt.child.set(j, rt.child.get(i));
                 }
@@ -328,7 +354,7 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
     public V search(K key) {
         IBTreeNode<K, V> node = Search(root, key);
         for(int i = 0; i<node.getNumOfKeys(); i++)
-            if(node.getKeys().get(i) == key)
+            if(node.getKeys().get(i).compareTo(key) == 0)
                 return node.getValues().get(i);
             return null;
     }
