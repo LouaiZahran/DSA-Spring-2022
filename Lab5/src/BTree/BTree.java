@@ -326,7 +326,11 @@ public class BTree<K extends Comparable<K>, V> implements IBTree<K, V>{
 
     @Override
     public V search(K key) {
-        return (V) Search(root, key);
+        IBTreeNode<K, V> node = Search(root, key);
+        for(int i = 0; i<node.getNumOfKeys(); i++)
+            if(node.getKeys().get(i) == key)
+                return node.getValues().get(i);
+            return null;
     }
 
     @Override

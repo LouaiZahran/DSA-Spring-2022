@@ -13,9 +13,18 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode<K, V>{
     public boolean leaf = true;
 
     public BTreeNode(int T){
-        key = new ArrayList<>(2 * T - 1);
-        value = new ArrayList<>(2 * T - 1);
-        child = new ArrayList<>(2 * T);
+        key = new ArrayList<>();
+        value = new ArrayList<>();
+        child = new ArrayList<>();
+        for(int i=0; i < 2 * T - 1; i++)
+            key.add(null);
+
+        for(int i=0; i < 2 * T - 1; i++)
+            value.add(null);
+
+        for(int i=0; i < 2 * T; i++)
+            child.add(null);
+
     }
 
     public int Find(Comparable<K> k) {
