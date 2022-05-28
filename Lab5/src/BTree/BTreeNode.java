@@ -1,80 +1,44 @@
 package BTree;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
-import static BTree.BTree.subList;
-
-/*
-a node with 2 keys b & c along with their values:
-
-|         |---|         |---|         |
-| child a | b | child c | d | child e |
-|         |---|         |---|         |
-
-*/
 public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
 
-    private IBTreeNode parent;
-    private int numOfKeys;  //max no of keys
-    private boolean leaf;
-    private List<K> keys;
-    private List<V> values;
-    private List<IBTreeNode<K,V>> children;
-    // public BTreeNode(int numOfKeys,boolean leaf){
-    //     setNumOfKeys(numOfKeys);
-    //     setLeaf(leaf);
-    // }
-    public BTreeNode(int numOfKeys, boolean leaf, List<K> keys, List<V> values, List<IBTreeNode<K, V>> children,IBTreeNode<K,V> Parent){
-        setNumOfKeys(numOfKeys);
-        setLeaf(leaf);
-        setKeys(keys);
-        setValues(values);
-        setChildren(children);
-//        if(children.size()!=numOfKeys+1){
-//            for(int i=children.size();i<numOfKeys+1;i++){
-//                this.children.add(null);
-//            }
-//        }
-        this.parent = Parent;
+    public int n;
+    public K[] key;
+    public BTreeNode<K, V>[] child;
+    public boolean leaf = true;
+
+    public BTreeNode(int T){
+        key = (K[])(new ArrayList<K>(2 * T - 1).toArray());
+        child = (BTreeNode<K, V>[])(new ArrayList<BTreeNode<K, V>>(2 * T).toArray());
     }
 
-    @Override
-    public int indexOfKey(Comparable k) {
-        for (int i = 0; i < this.keys.size(); i++) {
-            if (this.keys.get(i).compareTo((K) k)== 0) {
+    public int Find(Comparable<K> k) {
+        for (int i = 0; i < this.n; i++) {
+            if (this.key[i] == k) {
                 return i;
             }
         }
         return -1;
-    }
-
-    @Override
-    public int getMinNumOfKeys() {
-        return (int) Math.ceil( this.numOfKeys/2f);
-    }
-
-
-    @Override
-    public boolean isfull(){
-        return this.keys.size() == this.numOfKeys;
-    }
-
+    };
 
     @Override
     public int getNumOfKeys() {
-        return this.numOfKeys;
+        return this.n;
     }
 
     @Override
     public void setNumOfKeys(int numOfKeys) {
-        this.numOfKeys = numOfKeys;
+        this.n = numOfKeys;
     }
 
     @Override
     public boolean isLeaf() {
-        return this.getChildren().size()==0;
+        return this.leaf;
     }
 
     @Override
@@ -83,59 +47,33 @@ public class BTreeNode<K extends Comparable<K>, V> implements IBTreeNode{
     }
 
     @Override
-    public List<K> getKeys() {
-        return this.keys;
+    public List getKeys() {
+        return Arrays.stream(key).toList();
     }
 
     @Override
     public void setKeys(List keys) {
-        this.keys = keys;
+        key = (K[])keys.toArray();
     }
 
     @Override
     public List getValues() {
-        return this.values;
+        return null;
     }
 
     @Override
     public void setValues(List values) {
-        this.values = values;
+
     }
 
     @Override
-    public List<IBTreeNode<K,V>> getChildren() {
-        return this.children;
+    public List<IBTreeNode> getChildren() {
+        return null;
     }
 
     @Override
     public void setChildren(List children) {
-        this.children = children;
-    }
-    @Override
-    public void print(){
-        int i=0;
 
-        for (Comparable key : keys) {
-            System.out.print(key+":"+values.get(i));
-            System.out.print(" | ");
-            i++;
-        }
-        System.out.println();
-        for (IBTreeNode<K,V> ibTreeNode : children) {
-            if(ibTreeNode!=null){
-                ibTreeNode.print();
-            }
-        }
-    }
-
-    @Override
-    public IBTreeNode<K,V> getParent() {
-        return parent;
-    }
-
-    @Override
-    public void setParent(IBTreeNode parent) {
-        this.parent = parent;
     }
 
 }

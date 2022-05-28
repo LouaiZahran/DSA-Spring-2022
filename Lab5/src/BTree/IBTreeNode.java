@@ -1,7 +1,6 @@
 package BTree;
 
 import java.util.List;
-import java.util.Stack;
 
 
 public interface IBTreeNode<K extends Comparable<K>, V> {
@@ -12,17 +11,12 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	int getNumOfKeys();
 
 	/**
-	 * @param numOfKeys maximum number of keys this node can hold
+	 * @param numOfKeys number of keys in this node
 	 */
 	void setNumOfKeys(int numOfKeys);
 
 	/**
-	 * @return return min number of keys in this node.
-	 */
-	int getMinNumOfKeys();
-
-	/**
-	 * @return if the node is leaf or not.
+	 * @return isLeaf if the node is leaf or not.
 	 */
 	boolean isLeaf();
 
@@ -57,23 +51,7 @@ public interface IBTreeNode<K extends Comparable<K>, V> {
 	List<IBTreeNode<K, V>> getChildren();
 
 	/**
-	 * @param children the children to set.
+	 * @param children the children to set
 	 */
 	void setChildren(List<IBTreeNode<K, V>> children);
-
-	/**
-	 * @return true if the node is full, false otherwise.
-	 */
-	boolean isfull();
-
-	IBTreeNode getParent();
-
-	void print();
-	/**
-	 *
-	 * @param k key
-	 * @return index of key in keys if not found then return -1
-	 */
-	int indexOfKey(Comparable k);
-	void setParent(IBTreeNode<K, V> parent);
 }

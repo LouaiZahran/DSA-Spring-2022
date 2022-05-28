@@ -64,9 +64,9 @@ public class Main {
             e.printStackTrace();
         }
         engine.indexWebPage("Wikipedia Data Sample/wiki_00");
-        engine.print();
+        //engine.print();
         engine.deleteWebPage("Wikipedia Data Sample/wiki_00");
-        engine.print();
+        //engine.print();
 //        List<ISearchResult> results = engine.searchByWordWithRanking("Beach");
 //        for(ISearchResult result: results)
 //            System.out.println(result.getId() + " " + result.getRank());

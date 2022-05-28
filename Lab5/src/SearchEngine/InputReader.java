@@ -48,7 +48,7 @@ public class InputReader {
                     //System.out.println("URL: " + url);
                     //System.out.println("Title: " + title);
                     //System.out.println("Content: " + content);
-                    docs.add(new Doc(id, url, title, content.split("[\r\n\t\f]+|\n+")));
+                    docs.add(new Doc(id, url, title, content.split("[\r\n\t\f ]+|\n+")));
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
